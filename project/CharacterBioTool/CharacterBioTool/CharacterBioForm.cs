@@ -33,28 +33,28 @@ namespace CharacterBioTool
 			public FIELD_TYPE			type;
 			public bool					addToPanel;
 
-			public String				labelText;
+			public int					width;	// default: auto-calculate
+			public int					height;	// default: auto-calculate
+			public bool					border;
+
+			public DockStyle			labelDockStyle;
 			public int					labelWidth;
 			public int					labelHeight;
+			public String				labelText;
 			public ContentAlignment		labelTextAlign;
+			public bool					labelBorder;
 
-			public String				controlText;
+			public DockStyle			controlDockStyle;
 			public int					controlWidth;
 			public int					controlHeight;
+			public String				controlText;
 			public ContentAlignment		controlTextAlign;
+			public bool					controlBorder;
 		}
 
 
-		public class Field
+		public class Field : Panel
 		{
-			public Point origin;
-			public int left;
-			public int right;
-			public int top;
-			public int bottom;
-			public int width;
-			public int height;
-
 			public CharacterBioForm		form;
 			public Label				label;
 			public Control				control;
@@ -62,27 +62,30 @@ namespace CharacterBioTool
 
 			public Field(CharacterBioForm _form, FieldDesc _desc)
 			{
-				// store values
+				// store form
 				form = _form;
-				origin = (_desc.addToPanel) ? (_form.nextPanelFieldPosition) : (_form.nextIndependentFieldPosition);
 
-				// create label
+				// add panel to parent control
+				((_desc.addToPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(this);
+
+				// init panel
+				Location = (_desc.addToPanel) ? (_form.nextPanelFieldPosition) : (_form.nextIndependentFieldPosition);
+				Size = new Size(
+					(_desc.width != 0) ? (_desc.width) : (Math.Max(_desc.labelWidth, _desc.controlWidth)),
+					(_desc.height != 0) ? (_desc.height) : _desc.labelHeight + _desc.controlHeight + CharacterBioForm.fieldControlSpacingY
+					);
+
+				// init label
 				label = new Label();
-				label.Location = origin;
+				//label.Location = new Point(0, 0);
 				label.Text = _desc.labelText;
-				label.Width = _desc.labelWidth;
-				label.Height = _desc.labelHeight;
+				label.Size = new Size(_desc.labelWidth, _desc.labelHeight);
 				label.TextAlign = _desc.labelTextAlign;
 				label.Font = CharacterBioForm.labelFont;
-				label.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-				((_desc.addToPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(label);
+				label.BorderStyle = (_desc.labelBorder) ? (BorderStyle.Fixed3D) : (BorderStyle.None);
 
-				// store extents
-				left = origin.X;
-				right = label.Right;
-				top = origin.Y;
-				bottom = label.Bottom;
-				CalculateSize();
+				// add to panel
+				Controls.Add(label);
 			}
 
 			~Field()
@@ -98,21 +101,9 @@ namespace CharacterBioTool
 			{
 				label.BackColor = _color;
 			}
-			public virtual void SetBackColor(Color _color) {}
-
-			// gets left/right/top/bottom from origin/size
-			public void CalculateBounds()
+			public virtual void SetBackColor(Color _color)
 			{
-				left = origin.X;
-				right = left + width;
-				top = origin.Y;
-				bottom = top + height;
-			}
-			// gets width/height from left/right/top/bottom
-			public void CalculateSize()
-			{
-				width = Math.Abs(right - left);
-				height = Math.Abs(bottom - top);
+				BackColor = _color;
 			}
 		} // end class
 		public class ButtonField : Field
@@ -123,40 +114,27 @@ namespace CharacterBioTool
 			public ButtonField(CharacterBioForm _form, FieldDesc _desc)
 				: base(_form, _desc)
 			{
-				// create button control
+				// init button
 				Button button = new Button();
-				button.Location = new Point(origin.X, label.Bottom + CharacterBioForm.fieldControlSpacingY);
+				button.Location = new Point(0, label.Bottom + CharacterBioForm.fieldControlSpacingY);
 				button.Text = _desc.controlText;
-				button.Width = _desc.controlWidth;
-				button.Height = _desc.controlHeight;
+				button.Size = new Size(_desc.controlWidth, _desc.controlHeight);
 				button.TextAlign = _desc.controlTextAlign;
+
+				// add to panel
 				control = button;
-				((_desc.addToPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(control);
-
-				// store extents
-				right = Math.Max(right, control.Right);
-				bottom = control.Bottom;
-				CalculateSize();
-			}
-
-			~ButtonField()
-			{
-				form.Controls.Remove(control);
+				Controls.Add(control);
 			}
 
 			public override void SetForeColor(Color _color)
 			{
-				base.SetForeColor(_color);
 				control.ForeColor = _color;
+				base.SetForeColor(_color);
 			}
 			public override void SetMidColor(Color _color)
 			{
-				base.SetMidColor(_color);
 				control.BackColor = _color;
-			}
-			public override void SetBackColor(Color _color)
-			{
-				base.SetBackColor(_color);
+				base.SetMidColor(_color);
 			}
 		} // end class
 		public class TextBoxField : Field
@@ -167,40 +145,50 @@ namespace CharacterBioTool
 			public TextBoxField(CharacterBioForm _form, FieldDesc _desc)
 				: base(_form, _desc)
 			{
-				// create text box control
+				// init text box
 				TextBox textBox = new TextBox();
-				textBox.Location = new Point(origin.X, label.Bottom + CharacterBioForm.fieldControlSpacingY);
-				textBox.Width = _desc.controlWidth;
-				textBox.Height = _desc.controlHeight;
-				textBox.TextAlign = (System.Windows.Forms.HorizontalAlignment)_desc.controlTextAlign;
+				textBox.Location = new Point(0, label.Bottom + CharacterBioForm.fieldControlSpacingY);
+				textBox.Text = _desc.controlText;
+				if (_desc.controlWidth != 0) textBox.Width = _desc.controlWidth;
+				if (_desc.controlHeight != 0) textBox.Height = _desc.controlHeight;
+				if (_desc.height == 0 && _desc.controlHeight == 0)
+					Height += textBox.Height + CharacterBioForm.fieldControlSpacingY;
+				switch (_desc.controlTextAlign)
+				{
+					default:
+					case ContentAlignment.TopLeft:
+					case ContentAlignment.MiddleLeft:
+					case ContentAlignment.BottomLeft:
+						textBox.TextAlign = HorizontalAlignment.Left;
+						break;
+					case ContentAlignment.TopCenter:
+					case ContentAlignment.MiddleCenter:
+					case ContentAlignment.BottomCenter:
+						textBox.TextAlign = HorizontalAlignment.Center;
+						break;
+					case ContentAlignment.TopRight:
+					case ContentAlignment.MiddleRight:
+					case ContentAlignment.BottomRight:
+						textBox.TextAlign = HorizontalAlignment.Right;
+						break;
+				}
 				textBox.Font = CharacterBioForm.textBoxFont;
+				textBox.BorderStyle = (_desc.controlBorder) ? (BorderStyle.Fixed3D) : (BorderStyle.None);
+
+				// add to panel
 				control = textBox;
-				((_desc.addToPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(control);
-
-				// store extents
-				right = Math.Max(right, control.Right);
-				bottom = control.Bottom;
-				CalculateSize();
-			}
-
-			~TextBoxField()
-			{
-				form.Controls.Remove(control);
+				Controls.Add(control);
 			}
 
 			public override void SetForeColor(Color _color)
 			{
-				base.SetForeColor(_color);
 				control.ForeColor = _color;
+				base.SetForeColor(_color);
 			}
 			public override void SetMidColor(Color _color)
 			{
-				base.SetMidColor(_color);
 				control.BackColor = _color;
-			}
-			public override void SetBackColor(Color _color)
-			{
-				base.SetBackColor(_color);
+				base.SetMidColor(_color);
 			}
 		} // end class
 
@@ -259,9 +247,9 @@ namespace CharacterBioTool
 		ColorPalette[]			palettes = new ColorPalette[]
 		{
 			//				 form back color					field fore color					field mid color						field back color
-			new ColorPalette(GreyTone(0x2f),					Color.White,						GreyTone(0x4f),						GreyTone(0x3f)), // dark
+			new ColorPalette(GreyTone(0x2f),					Color.White,						GreyTone(0x57),						GreyTone(0x3f)), // dark
 			new ColorPalette(GreyTone(0x6f),					Color.White,						GreyTone(0x67),						GreyTone(0x7f)), // grey
-			new ColorPalette(GreyTone(0xdf),					Color.Black,						Color.White,						GreyTone(0xdf)), // light
+			new ColorPalette(GreyTone(0xdf),					Color.Black,						Color.White,						GreyTone(0xef)), // light
 		};
 
 
@@ -275,7 +263,10 @@ namespace CharacterBioTool
 		const int				fieldControlSpacingX = 10;
 		static readonly int		fieldControlSpacingY = 0 /*(int)labelFont.Size / 2*/;
 
+		static readonly int		defaultLabelWidth = 200;
 		static readonly int		defaultLabelHeight = (int)(labelFont.Size * 2.25f);
+		static readonly int		defaultControlWidth = defaultLabelWidth;
+		static readonly int		defaultControlHeight = 50;
 
 		Point					nextIndependentFieldPosition = new Point(originX, originY);
 		Point					nextPanelFieldPosition = new Point(originX, originY);
@@ -322,7 +313,6 @@ namespace CharacterBioTool
 				labelHeight = defaultLabelHeight,
 				labelTextAlign = ContentAlignment.MiddleCenter,
 
-				controlText = "",
 				controlWidth = 100,
 				controlHeight = 25,
 				controlTextAlign = ContentAlignment.MiddleCenter,
@@ -333,14 +323,13 @@ namespace CharacterBioTool
 				addToPanel = true,
 
 				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NAME)),
-				labelWidth = 200,
+				labelWidth = defaultLabelWidth,
 				labelHeight = defaultLabelHeight,
 				labelTextAlign = ContentAlignment.MiddleLeft,
 
-				controlText = "",
-				controlWidth = 200,
-				controlHeight = 25,
-				controlTextAlign = ContentAlignment.TopLeft,
+				controlText = "test",
+				controlWidth = defaultControlWidth,
+				controlTextAlign = (ContentAlignment)HorizontalAlignment.Left,
 			},
 			//FIELD_TYPE.TEXT_BOX,
 			//FIELD_TYPE.TEXT_BOX,
@@ -417,7 +406,7 @@ namespace CharacterBioTool
 		void AddField(Field _field)
 		{
 			fieldList.Add(_field as Field);
-			nextIndependentFieldPosition.Y = _field.bottom + fieldSpacingY;
+			nextIndependentFieldPosition.Y = _field.Bottom + fieldSpacingY;
 		}
 		void RemoveField(Field _field) { fieldList.Remove(_field); }
 
