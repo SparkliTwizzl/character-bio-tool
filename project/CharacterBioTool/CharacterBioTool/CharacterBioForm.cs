@@ -15,13 +15,10 @@ namespace CharacterBioTool
 
 	public partial class CharacterBioForm : Form
 	{
-		public struct Dimensions
-		{
-			public int width;
-			public int height;
-		}
 
-		// field class wrappers for winform controls to bundle labels and other functionality
+		#region field wrapper classes
+
+		// wrapper classes for winform controls to bundle labels with other functionality
 		// fields are limited to one functional control each
 		public enum FIELD_TYPE
 		{
@@ -44,7 +41,7 @@ namespace CharacterBioTool
 			public Control				control;
 
 
-			public Field(CharacterBioForm _form, String _labelText)
+			public Field(CharacterBioForm _form, bool _addToPanel, String _labelText)
 			{
 				// store values
 				form = _form;
@@ -59,7 +56,7 @@ namespace CharacterBioTool
 				label.Location = origin;
 
 				// add to form controls
-				form.Controls.Add(label);
+				((_addToPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(label);
 
 				// store extents
 				left = origin.X;
@@ -101,8 +98,8 @@ namespace CharacterBioTool
 			//public Button button;
 
 
-			public ButtonField(CharacterBioForm _form, String _labelText, String _buttonText)
-				: base(_form, _labelText)
+			public ButtonField(CharacterBioForm _form, bool _addToPanel, String _labelText, String _buttonText)
+				: base(_form, _addToPanel, _labelText)
 			{
 				// create button control
 				control = new Button();
@@ -110,7 +107,7 @@ namespace CharacterBioTool
 				control.Text = _buttonText;
 
 				// add button to form controls
-				form.Controls.Add(control);
+				((_addToPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(control);
 
 				// store extents
 				right = Math.Max(right, control.Right);
@@ -143,8 +140,8 @@ namespace CharacterBioTool
 			//public TextBox textBox;
 
 
-			public TextBoxField(CharacterBioForm _form, String _labelText)
-				: base(_form, _labelText)
+			public TextBoxField(CharacterBioForm _form, bool _addToPanel, String _labelText)
+				: base(_form, _addToPanel, _labelText)
 			{
 				// create text box control
 				control = new TextBox();
@@ -152,7 +149,7 @@ namespace CharacterBioTool
 				control.Location = new Point(origin.X, label.Bottom + form.fieldControlSpacingY);
 
 				// add text box to form controls
-				form.Controls.Add(control);
+				((_addToPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(control);
 
 				// store extents
 				right = Math.Max(right, control.Right);
@@ -181,9 +178,135 @@ namespace CharacterBioTool
 			}
 		} // end class
 
+		#endregion field wrapper classes
+
+		#region enums, structs
+
+		// color modes
+		struct ColorPalette
+		{
+			public Color	formBackColor;
+			public Color	fieldForeColor;
+			public Color	fieldMidColor;
+			public Color	fieldBackColor;
+
+			public ColorPalette(Color _formBackColor, Color _fieldForeColor, Color _fieldMidColor, Color _fieldBackColor)
+			{
+				formBackColor = _formBackColor;
+				fieldForeColor = _fieldForeColor;
+				fieldMidColor = _fieldMidColor;
+				fieldBackColor = _fieldBackColor;
+			}
+		}
 
 
-		// helper functions
+		#endregion enums, structs
+
+		#region form variables
+
+		// window
+		const int		windowWidth = 1600;
+		const int		windowHeight = 900;
+		readonly Size	windowSize = new Size(windowWidth, windowHeight);
+
+		// fonts
+		static Font		labelFont = new Font("Roboto", 10, FontStyle.Bold);
+		static Font		textBoxFont = new Font("Roboto", 10);
+
+		// color modes
+		enum COLOR_MODE
+		{
+			DARK,
+			GREY,
+			LIGHT,
+
+			MIN = DARK,
+			MAX = LIGHT,
+		}
+		COLOR_MODE		colorMode = COLOR_MODE.DARK;
+		ColorPalette[]	palettes = new ColorPalette[]
+		{
+			//				 form back color					field fore color					field mid color						field back color
+			new ColorPalette(GreyTone(0x2f),					Color.White,						GreyTone(0x4f),						GreyTone(0x3f)), // dark
+			new ColorPalette(GreyTone(0x6f),					Color.White,						GreyTone(0x67),						GreyTone(0x7f)), // grey
+			new ColorPalette(GreyTone(0xdf),					Color.Black,						Color.White,						GreyTone(0xdf)), // light
+		};
+
+		// location/spacing
+		const int		originX = 20;
+		const int		originY = 20;
+
+		const int		fieldSpacingX = 50;
+		readonly int	fieldSpacingY = (int)labelFont.Size / 2;
+
+		const int		fieldControlSpacingX = 10;
+		readonly int	fieldControlSpacingY = (int)labelFont.Size / 2;
+
+		readonly int	labelHeight = (int)labelFont.Size * 2;
+
+		Point			nextFieldPosition = new Point(originX, originY);
+
+		// fields
+		public enum FIELD_NAME
+		{
+			COLOR_MODE,
+			NAME,
+			NICKNAME,
+			RACE,
+			GENDER,
+			SEX,
+			BIRTH_DATE,
+			DEATH_DATE,
+			LITERAL_AGE,
+			PHYSICAL_AGE,
+			APPARENT_AGE,
+			HEIGHT,
+			WEIGHT,
+			BUILD,
+			SKIN_COLOR,
+			EYE_COLOR,
+			HAIR_LENGTH,
+			HAIR_STYLE,
+			HAIR_COLOR,
+			FACIAL_HAIR_LENGTH,
+			FACIAL_HAIR_STYLE,
+			FACIAL_HAIR_COLOR,
+			ATTIRE,
+
+			COUNT
+		}
+		FIELD_TYPE[]	fields = new FIELD_TYPE[]
+		{
+			FIELD_TYPE.BUTTON,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+		};
+		Panel			fieldPanel = new Panel();
+		List<Field>		fieldList = new List<Field>();
+
+		#endregion form variables
+
+		#region helper functions
 
 		// generates a Color with the specified grey tone
 		public static Color GreyTone(int _tone) { return Color.FromArgb(_tone, _tone, _tone); }
@@ -223,172 +346,6 @@ namespace CharacterBioTool
 			}
 
 			return str.ToString();
-		}
-
-
-
-		// form variables
-
-		// fonts
-		static Font labelFont = new Font("Roboto", 10, FontStyle.Bold);
-		static Font textBoxFont = new Font("Roboto", 10);
-
-		// color modes
-		enum COLOR_MODE
-		{
-			DARK,
-			GREY,
-			LIGHT,
-
-			MIN = DARK,
-			MAX = LIGHT,
-		}
-		struct ColorPalette
-		{
-			public Color	formBackColor;
-			public Color	fieldForeColor;
-			public Color	fieldMidColor;
-			public Color	fieldBackColor;
-
-			public ColorPalette(Color _formBackColor, Color _fieldForeColor, Color _fieldMidColor, Color _fieldBackColor)
-			{
-				formBackColor = _formBackColor;
-				fieldForeColor = _fieldForeColor;
-				fieldMidColor = _fieldMidColor;
-				fieldBackColor = _fieldBackColor;
-			}
-		}
-
-		COLOR_MODE colorMode = COLOR_MODE.DARK;
-		ColorPalette[] palettes = new ColorPalette[]
-		{
-			//				 form back color					field fore color					field mid color						field back color
-			new ColorPalette(GreyTone(0x2f),					Color.White,						GreyTone(0x4f),						GreyTone(0x3f)), // dark
-			new ColorPalette(GreyTone(0x6f),					Color.White,						GreyTone(0x67),						GreyTone(0x7f)), // grey
-			new ColorPalette(GreyTone(0xdf),					Color.Black,						Color.White,						GreyTone(0xdf)), // light
-		};
-
-		// location/spacing
-		const int		originX = 20;
-		const int		originY = 20;
-
-		const int		fieldSpacingX = 50;
-		readonly int	fieldSpacingY = (int)labelFont.Size / 2;
-
-		const int		fieldControlSpacingX = 10;
-		readonly int	fieldControlSpacingY = (int)labelFont.Size / 2;
-
-		readonly int	labelHeight = (int)labelFont.Size * 2;
-
-		Point			nextFieldPosition = new Point(originX, originY);
-
-		// fields
-		List<Field>		fieldList = new List<Field>();
-		public enum FIELD_NAME
-		{
-			COLOR_MODE,
-			NAME,
-			NICKNAME,
-			RACE,
-			GENDER,
-			SEX,
-			BIRTH_DATE,
-			DEATH_DATE,
-			LITERAL_AGE,
-			PHYSICAL_AGE,
-			APPARENT_AGE,
-			HEIGHT,
-			WEIGHT,
-			BUILD,
-			SKIN_COLOR,
-			EYE_COLOR,
-			HAIR_LENGTH,
-			HAIR_STYLE,
-			HAIR_COLOR,
-			FACIAL_HAIR_LENGTH,
-			FACIAL_HAIR_STYLE,
-			FACIAL_HAIR_COLOR,
-			ATTIRE,
-		}
-		FIELD_TYPE[] fields = new FIELD_TYPE[]
-		{
-			FIELD_TYPE.BUTTON,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-			FIELD_TYPE.TEXT_BOX,
-		};
-
-
-
-		// main form method
-		public CharacterBioForm()
-		{
-			InitializeComponent();
-
-			// create lambda to make accessing fields in list easier
-			Func<FIELD_NAME, Field> GetField = _fieldName => fieldList[Convert.ToInt32(_fieldName)];
-
-			// create color mode lambdas
-			Func<COLOR_MODE, ColorPalette> GetPalette = _colorMode => palettes[(int)_colorMode];
-			Action<COLOR_MODE> SetColorMode = _colorMode =>
-			{
-				ColorPalette palette = GetPalette(colorMode);
-				SetFormColors(palette);
-				GetField(FIELD_NAME.COLOR_MODE).control.Text = Convert.ToString(colorMode);
-			};
-
-			// init fields and add them to form
-			for (int i = 0; i < fields.Length; ++i)
-			{
-				switch (fields[i])
-				{
-					default: break;
-					case FIELD_TYPE.BASIC:
-						AddField(new Field(this, CapCaseToFirstCaps(Convert.ToString((FIELD_NAME)i))));
-						break;
-					case FIELD_TYPE.BUTTON:
-						AddField(new ButtonField(this, CapCaseToFirstCaps(Convert.ToString((FIELD_NAME)i)), ""));
-						break;
-					case FIELD_TYPE.TEXT_BOX:
-						AddField(new TextBoxField(this, CapCaseToFirstCaps(Convert.ToString((FIELD_NAME)i))));
-						break;
-				}
-			}
-
-			// set field custom behaviors
-			// set color mode button behavior with event handler lambda
-			GetField(FIELD_NAME.COLOR_MODE).control.Click += (obj, eventArgs) =>
-			{
-				this.ActiveControl = null; // defocus button after clicking it
-				colorMode = (colorMode == COLOR_MODE.MAX) ? (COLOR_MODE.MIN) : (colorMode + 1);
-				SetColorMode(colorMode);
-			};
-
-
-			// resize window
-			Size = new Size(1920, 1080);
-
-			// set initial color mode
-			SetColorMode(colorMode);
 		}
 
 		// functions to manage fields
@@ -434,6 +391,74 @@ namespace CharacterBioTool
 		{
 			for (int i = 0; i < fieldList.Count; ++i)
 				fieldList[i].SetBackColor(_color);
+		}
+
+		#endregion helper functions
+
+
+
+		// main form method
+		public CharacterBioForm()
+		{
+			InitializeComponent();
+
+
+			// create lambdas
+
+			// create lambda to make accessing fields in list easier
+			Func<FIELD_NAME, Field> GetField = _fieldName => ((int)_fieldName < fieldList.Count) ? (fieldList[(int)_fieldName]) : (null);
+
+			// create color mode lambdas
+			Func<COLOR_MODE, ColorPalette> GetPalette = _colorMode => palettes[(int)_colorMode];
+			Action<COLOR_MODE> SetColorMode = _colorMode =>
+			{
+				ColorPalette palette = GetPalette(colorMode);
+				SetFormColors(palette);
+				GetField(FIELD_NAME.COLOR_MODE).control.Text = Convert.ToString(colorMode);
+			};
+
+
+			// set initial window size
+			Size = windowSize;
+
+
+			// init control panel
+			fieldPanel.Location = new Point(0, 0);
+			fieldPanel.Size = windowSize;
+			fieldPanel.AutoScroll = true;
+			Controls.Add(fieldPanel);
+
+			// init fields and add them to form
+			for (int i = 0; i < fields.Length; ++i)
+			{
+				switch (fields[i])
+				{
+					default: break;
+					case FIELD_TYPE.BASIC:
+						AddField(new Field(this, true, CapCaseToFirstCaps(Convert.ToString((FIELD_NAME)i))));
+						break;
+					case FIELD_TYPE.BUTTON:
+						AddField(new ButtonField(this, true, CapCaseToFirstCaps(Convert.ToString((FIELD_NAME)i)), ""));
+						break;
+					case FIELD_TYPE.TEXT_BOX:
+						AddField(new TextBoxField(this, true, CapCaseToFirstCaps(Convert.ToString((FIELD_NAME)i))));
+						break;
+				}
+			}
+
+			// set initial color mode
+			SetColorMode(colorMode);
+
+
+			// set field custom behaviors
+
+			// set color mode button behavior with event handler lambda
+			GetField(FIELD_NAME.COLOR_MODE).control.Click += (obj, eventArgs) =>
+			{
+				this.ActiveControl = null; // defocus button after clicking it
+				colorMode = (colorMode == COLOR_MODE.MAX) ? (COLOR_MODE.MIN) : (colorMode + 1);
+				SetColorMode(colorMode);
+			};
 		}
 
 	} // end class
