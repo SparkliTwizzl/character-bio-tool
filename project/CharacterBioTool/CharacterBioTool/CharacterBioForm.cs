@@ -15,243 +15,241 @@ namespace CharacterBioTool
 
 	public partial class CharacterBioForm : Form
 	{
-
-		// convenience functions
-		public static Color GreyTone(int _tone) { return Color.FromArgb(_tone, _tone, _tone); }
-
-
-
 		// field class wrappers for winform controls to bundle labels and other functionality
 
+		public struct Dimensions
+		{
+			public int width;
+			public int height;
+		}
+
+		public enum FIELD_TYPE
+		{
+			BASIC,
+			BUTTON,
+			TEXT_BOX,
+		}
 		public class Field
 		{
-			public struct Extents
-			{
-				public Point origin;
-				public int left;
-				public int right;
-				public int top;
-				public int bottom;
-				public int width;
-				public int height;
+			public Point origin;
+			public int left;
+			public int right;
+			public int top;
+			public int bottom;
+			public int width;
+			public int height;
 
-				public Extents(int _l, int _r, int _t, int _b)
-				{
-					origin = new Point(_l, _t);
-					left = _l;
-					right = _r;
-					top = _t;
-					bottom = _b;
-					width = Math.Abs(_r - _l);
-					height = Math.Abs(_b - _t);
-				}
-				public Extents(Point _origin, int _w, int _h)
-				{
-					origin = _origin;
-					width = _w;
-					height = _h;
-					left = origin.X;
-					right = left + width;
-					top = origin.Y;
-					bottom = top + height;
-				}
-
-				// gets left/right/top/bottom from origin/size
-				public void CalculateBounds()
-				{
-					left = origin.X;
-					right = left + width;
-					top = origin.Y;
-					bottom = top + height;
-				}
-				// gets width/height from left/right/top/bottom
-				public void CalculateSize()
-				{
-					width = Math.Abs(right - left);
-					height = Math.Abs(bottom - top);
-				}
-			}
-
-			public CharacterBioForm form;
-			public Extents extents;
-			public bool useLabel;
-			public Label label;
-
-			public class FieldDesc
-			{
-				public bool useLabel;
-				public String labelText;
-
-				public FieldDesc() {}
-				public FieldDesc(bool _useLabel, String _labelText)
-				{
-					useLabel = _useLabel;
-					labelText = _labelText;
-				}
-			} // end class FieldDesc
+			public CharacterBioForm		form;
+			public Label				label;
+			public Control				control;
 
 
-			public Field(CharacterBioForm _form, bool _useLabel, String _labelText = "")
+			public Field(CharacterBioForm _form, String _labelText)
 			{
 				// store values
 				form = _form;
-				extents.origin = _form.nextFieldLocation;
-				useLabel = _useLabel;
+				origin = _form.nextFieldPosition;
 
 				// if label is used, create label
-				if (useLabel)
-				{
-					label = new Label();
-					label.Text = _labelText;
-					label.Location = extents.origin;
-					form.Controls.Add(label);
-				}
+				label = new Label();
+				label.Height = form.labelHeight;
+				label.TextAlign = ContentAlignment.BottomLeft;
+				label.Font = CharacterBioForm.labelFont;
+				label.Text = _labelText;
+				label.Location = origin;
+
+				// add to form controls
+				form.Controls.Add(label);
 
 				// store extents
-				extents.left = extents.origin.X;
-				extents.right = (useLabel) ? (label.Right) : (extents.left); // without label, field has no width
-				extents.top = extents.origin.Y;
-				extents.bottom = (useLabel) ? (label.Bottom) : (extents.top); // without label, field has no height
-				extents.CalculateSize();
+				left = origin.X;
+				right = label.Right;
+				top = origin.Y;
+				bottom = label.Bottom;
+				CalculateSize();
 			}
-			public Field(CharacterBioForm _form, FieldDesc _desc)
-				: this(_form, _desc.useLabel, _desc.labelText) { }
 
 			~Field()
 			{
-				if (useLabel)
-					form.Controls.Remove(label);
+				form.Controls.Remove(label);
 			}
 
 			public virtual void SetForeColor(Color _color)
 			{
-				if (useLabel)
-					label.ForeColor = _color;
+				label.ForeColor = _color;
 			}
 			public virtual void SetMidColor(Color _color) {}
 			public virtual void SetBackColor(Color _color) {}
-		} // end class Field
+
+			// gets left/right/top/bottom from origin/size
+			public void CalculateBounds()
+			{
+				left = origin.X;
+				right = left + width;
+				top = origin.Y;
+				bottom = top + height;
+			}
+			// gets width/height from left/right/top/bottom
+			public void CalculateSize()
+			{
+				width = Math.Abs(right - left);
+				height = Math.Abs(bottom - top);
+			}
+		} // end class
 		public class ButtonField : Field
 		{
-			public new class FieldDesc : Field.FieldDesc
-			{
-				public String buttonText;
-
-				public FieldDesc() {}
-				public FieldDesc(bool _useLabel, String _labelText, String _buttonText)
-					: base(_useLabel, _labelText)
-				{
-					buttonText = _buttonText;
-				}
-			} // end class FieldDesc
-
-			public Button button;
+			//public Button button;
 
 
-			public ButtonField(CharacterBioForm _form, bool _useLabel, String _labelText = "", String _buttonText = "")
-				: base(_form, _useLabel, _labelText)
+			public ButtonField(CharacterBioForm _form, String _labelText, String _buttonText)
+				: base(_form, _labelText)
 			{
 				// create button control
-				button = new Button();
-				button.Location = new Point(extents.origin.X, (_useLabel) ? label.Bottom : extents.origin.Y);
-				button.Text = _buttonText;
-
-				// store extents
-				extents.right = Math.Max(extents.right, button.Right);
-				extents.bottom = button.Bottom;
-				extents.CalculateSize();
+				//button = new Button();
+				//button.Location = new Point(origin.X, label.Bottom + form.fieldControlSpacingY);
+				//button.Text = _buttonText;
+				control = new Button();
+				control.Location = new Point(origin.X, label.Bottom + form.fieldControlSpacingY);
+				control.Text = _buttonText;
 
 				// add button to form controls
-				form.Controls.Add(button);
+				//form.Controls.Add(button);
+				form.Controls.Add(control);
+
+				// store extents
+				//right = Math.Max(right, button.Right);
+				//bottom = button.Bottom;
+				right = Math.Max(right, control.Right);
+				bottom = control.Bottom;
+				CalculateSize();
 			}
-			public ButtonField(CharacterBioForm _form, FieldDesc _desc)
-				: this(_form, _desc.useLabel, _desc.labelText, _desc.buttonText) { }
 
 			~ButtonField()
 			{
-				form.Controls.Remove(button);
+				//form.Controls.Remove(button);
+				form.Controls.Remove(control);
 			}
 
 			public override void SetForeColor(Color _color)
 			{
 				base.SetForeColor(_color);
-				button.ForeColor = _color;
+				//button.ForeColor = _color;
+				control.ForeColor = _color;
 			}
 			public override void SetMidColor(Color _color)
 			{
 				base.SetMidColor(_color);
-				button.BackColor = _color;
+				//button.BackColor = _color;
+				control.BackColor = _color;
 			}
 			public override void SetBackColor(Color _color)
 			{
 				base.SetBackColor(_color);
 			}
-		} // end class ButtonField
+		} // end class
 		public class TextBoxField : Field
 		{
-			public new class FieldDesc : Field.FieldDesc
-			{
-				public FieldDesc(bool _useLabel, String _labelText)
-					: base(_useLabel, _labelText) {}
-			} // end class FieldDesc
-
-			public TextBox textBox;
+			//public TextBox textBox;
 
 
-			public TextBoxField(CharacterBioForm _form, bool _useLabel, String _labelText = "")
-				: base(_form, _useLabel, _labelText)
+			public TextBoxField(CharacterBioForm _form, String _labelText)
+				: base(_form, _labelText)
 			{
 				// create text box control
-				textBox = new TextBox();
-				textBox.Location = new Point(extents.origin.X, (_useLabel) ? label.Bottom : extents.origin.Y);
-
-				// store extents
-				extents.right = Math.Max(extents.right, textBox.Right);
-				extents.bottom = textBox.Bottom;
-				extents.CalculateSize();
+				//textBox = new TextBox();
+				//textBox.Location = new Point(origin.X, label.Bottom + form.fieldControlSpacingY);
+				control = new TextBox();
+				control.Font = CharacterBioForm.labelFont;
+				control.Location = new Point(origin.X, label.Bottom + form.fieldControlSpacingY);
 
 				// add text box to form controls
-				form.Controls.Add(textBox);
+				//form.Controls.Add(textBox);
+				form.Controls.Add(control);
+
+				// store extents
+				//right = Math.Max(right, textBox.Right);
+				//bottom = textBox.Bottom;
+				right = Math.Max(right, control.Right);
+				bottom = control.Bottom;
+				CalculateSize();
 			}
-			public TextBoxField(CharacterBioForm _form, FieldDesc _desc)
-				: this(_form, _desc.useLabel, _desc.labelText) { }
 
 			~TextBoxField()
 			{
-				form.Controls.Remove(textBox);
+				//form.Controls.Remove(textBox);
+				form.Controls.Remove(control);
 			}
 
 			public override void SetForeColor(Color _color)
 			{
 				base.SetForeColor(_color);
-				textBox.ForeColor = _color;
+				//textBox.ForeColor = _color;
+				control.ForeColor = _color;
 			}
 			public override void SetMidColor(Color _color)
 			{
 				base.SetMidColor(_color);
-				textBox.BackColor = _color;
+				//textBox.BackColor = _color;
+				control.BackColor = _color;
 			}
 			public override void SetBackColor(Color _color)
 			{
 				base.SetBackColor(_color);
 			}
-		} // end class TextField
+		} // end class
+
+
+
+		// helper functions
+		public static Color GreyTone(int _tone) { return Color.FromArgb(_tone, _tone, _tone); }
+		public static String CapCaseToTitleCase(String _str)
+		{
+			_str = _str.ToLower();
+			StringBuilder str = new StringBuilder();
+
+			if (_str[0] >= 'a' && _str[0] <= 'z')
+				str.Append(_str[0].ToString().ToUpper());
+			else if (_str[0] == '_')
+				str.Append(' ');
+			else
+				str.Append(_str[0]);
+
+			for (int i = 1; i < _str.Length; ++i)
+			{
+				if (_str[i - 1] == '_')
+				{
+					str.Append(_str[i].ToString().ToUpper());
+				}
+				else
+				{
+					if (_str[i] == '_')
+						str.Append(' ');
+					else
+						str.Append(_str[i]);
+				}
+			}
+
+			return str.ToString();
+		}
 
 
 
 		// form variables
 
+		// fonts
+		static Font labelFont = new Font("Roboto", 10);
+
 		// color modes
-		public enum COLOR_MODE
+		enum COLOR_MODE
 		{
-			LIGHT = 0,
 			DARK,
 			GREY,
+			LIGHT,
 
-			MIN = LIGHT,
-			MAX = GREY,
+			MIN = DARK,
+			MAX = LIGHT,
 		}
-		public struct ColorPalette
+		struct ColorPalette
 		{
 			public Color	formBackColor;
 			public Color	fieldForeColor;
@@ -267,33 +265,82 @@ namespace CharacterBioTool
 			}
 		}
 
-		COLOR_MODE colorMode = COLOR_MODE.LIGHT;
+		COLOR_MODE colorMode = COLOR_MODE.DARK;
 		ColorPalette[] palettes = new ColorPalette[]
 		{
 			//				 form back color					field fore color					field mid color						field back color
-			new ColorPalette(GreyTone(0xdf),					Color.Black,						Color.White,						GreyTone(0xdf)),
-			new ColorPalette(GreyTone(0x2f),					Color.White,						GreyTone(0x4f),						GreyTone(0x3f)),
-			new ColorPalette(GreyTone(0x6f),					Color.White,						GreyTone(0x67),						GreyTone(0x7f)),
+			new ColorPalette(GreyTone(0x2f),					Color.White,						GreyTone(0x4f),						GreyTone(0x3f)), // dark
+			new ColorPalette(GreyTone(0x6f),					Color.White,						GreyTone(0x67),						GreyTone(0x7f)), // grey
+			new ColorPalette(GreyTone(0xdf),					Color.Black,						Color.White,						GreyTone(0xdf)), // light
 		};
 
 		// location/spacing
-		const int	originX = 20;
-		const int	originY = 20;
-		const int	spacingX = 50;
-		const int	spacingY = 10;
-		Point		nextFieldLocation = new Point(originX, originY);
+		const int		originX = 20;
+		const int		originY = 20;
+
+		const int		fieldSpacingX = 50;
+		readonly int	fieldSpacingY = (int)labelFont.Size / 2;
+
+		const int		fieldControlSpacingX = 10;
+		readonly int	fieldControlSpacingY = (int)labelFont.Size / 2;
+
+		readonly int	labelHeight = (int)labelFont.Size * 2;
+
+		Point			nextFieldPosition = new Point(originX, originY);
 
 		// fields
-		List<Field>		fields;
-		ButtonField		colorModeButton;
-		TextBoxField	nameBox;
-		TextBoxField	nicknameBox;
-		TextBoxField	raceBox;
-		TextBoxField	genderBox;
-		TextBoxField	sexBox;
-		// literal age
-		// phyiscal age
-		// apparent age
+		List<Field>		fieldList = new List<Field>();
+		public enum FIELD_NAME
+		{
+			COLOR_MODE,
+			NAME,
+			NICKNAME,
+			RACE,
+			GENDER,
+			SEX,
+			BIRTH_DATE,
+			DEATH_DATE,
+			LITERAL_AGE,
+			PHYSICAL_AGE,
+			APPARENT_AGE,
+		}
+
+		FIELD_TYPE[] fields = new FIELD_TYPE[]
+		{
+			FIELD_TYPE.BUTTON,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+			FIELD_TYPE.TEXT_BOX,
+		};
+
+
+		//ButtonField		colorModeButton;
+		//TextBoxField	nameBox;
+		//TextBoxField	nicknameBox;
+		//TextBoxField	raceBox;
+		//TextBoxField	genderBox;
+		//TextBoxField	sexBox;
+		//TextBoxField	birthDateBox;
+		//TextBoxField	deathDateBox;
+		//TextBoxField	literalAgeBox;
+		//TextBoxField	physicalAgeBox;
+		//TextBoxField	apparentAgeBox;
+		/*
+			height
+			weight
+			build
+			skin color
+			eye color
+			hair
+			facial hair
+			attire
+		*/
 
 
 
@@ -302,28 +349,44 @@ namespace CharacterBioTool
 		{
 			InitializeComponent();
 
-			// init fields
-			fields			= new List<Field>();
-			Field.FieldDesc desc;
-			desc = new ButtonField.FieldDesc();
+			// init fields and add them to form
+			//AddField(colorModeButton	= new ButtonField(this, "Color Mode", ""));
+			//AddField(nameBox			= new TextBoxField(this, "Name"));
+			//AddField(nicknameBox		= new TextBoxField(this, "Nickname"));
+			//AddField(raceBox			= new TextBoxField(this, "Race"));
+			//AddField(genderBox			= new TextBoxField(this, "Gender"));
+			//AddField(sexBox				= new TextBoxField(this, "Sex"));
+			//AddField(birthDateBox		= new TextBoxField(this, "Birth Date"));
+			//AddField(deathDateBox		= new TextBoxField(this, "Death Date"));
+			//AddField(literalAgeBox		= new TextBoxField(this, "Literal Age"));
+			//AddField(physicalAgeBox		= new TextBoxField(this, "Physical Age"));
+			//AddField(apparentAgeBox		= new TextBoxField(this, "Apparent Age"));
+			for (int i = 0; i < fields.Length; ++i)
+			{
+				switch (fields[i])
+				{
+					default: break;
+					case FIELD_TYPE.BASIC:
+						AddField(new Field(this, CapCaseToTitleCase(Convert.ToString((FIELD_NAME)i))));
+						break;
+					case FIELD_TYPE.BUTTON:
+						AddField(new ButtonField(this, CapCaseToTitleCase(Convert.ToString((FIELD_NAME)i)), ""));
+						break;
+					case FIELD_TYPE.TEXT_BOX:
+						AddField(new TextBoxField(this, CapCaseToTitleCase(Convert.ToString((FIELD_NAME)i))));
+						break;
+				}
+			}
 
-			AddField(colorModeButton	= new ButtonField(this, true, "Color Mode", ""));
-			AddField(nameBox			= new TextBoxField(this, true, "Name"));
-			AddField(nicknameBox		= new TextBoxField(this, true, "Nickname"));
-			AddField(raceBox			= new TextBoxField(this, true, "Race"));
-			AddField(genderBox			= new TextBoxField(this, true, "Gender"));
-			AddField(sexBox				= new TextBoxField(this, true, "Sex"));
-
-			// set initial control focus
-			ActiveControl = nameBox.textBox;
 
 			// create color mode lambdas
-			Func<COLOR_MODE, ColorPalette> GetPalette = _colorMode => palettes[Convert.ToInt32(colorMode)];
+			Func<COLOR_MODE, ColorPalette> GetPalette = _colorMode => palettes[(int)colorMode];
 			Action<COLOR_MODE> SetColorMode = _colorMode =>
 			{
 				ColorPalette palette = GetPalette(colorMode);
 				SetFormColors(palette);
-				colorModeButton.button.Text = Convert.ToString(colorMode);
+				//colorModeButton.button.Text = Convert.ToString(colorMode);
+				fieldList[Convert.ToInt32(FIELD_NAME.COLOR_MODE)].control.Text = Convert.ToString(colorMode);
 			};
 
 			// set initial color mode
@@ -333,7 +396,8 @@ namespace CharacterBioTool
 			// set field custom behaviors
 
 			// set color mode button behavior with event handler lambda
-			colorModeButton.button.Click += (obj, eventArgs) =>
+			//colorModeButton.button.Click += (obj, eventArgs) =>
+			fieldList[Convert.ToInt32(FIELD_NAME.COLOR_MODE)].control.Click += (obj, eventArgs) =>
 			{
 				this.ActiveControl = null; // defocus button after clicking it
 				colorMode = (colorMode == COLOR_MODE.MAX) ? (COLOR_MODE.MIN) : (colorMode + 1);
@@ -342,50 +406,50 @@ namespace CharacterBioTool
 		}
 
 		// functions to manage fields
-		public void AddField(Field _field)
+		void AddField(Field _field)
 		{
-			fields.Add(_field);
-			nextFieldLocation.Y = _field.extents.bottom + spacingY;
+			fieldList.Add(_field as Field);
+			nextFieldPosition.Y = _field.bottom + fieldSpacingY;
 		}
-		public void RemoveField(Field _field) { fields.Remove(_field); }
+		void RemoveField(Field _field) { fieldList.Remove(_field); }
 
 		// functions to manage colors
-		public void SetFormColors(Color _formBackColor, Color _fieldForeColor, Color _fieldMidColor, Color _fieldBackColor)
+		void SetFormColors(Color _formBackColor, Color _fieldForeColor, Color _fieldMidColor, Color _fieldBackColor)
 		{
 			this.BackColor = _formBackColor;
-			for (int i = 0; i < fields.Count; ++i)
+			for (int i = 0; i < fieldList.Count; ++i)
 			{
-				fields[i].SetForeColor(_fieldForeColor);
-				fields[i].SetMidColor(_fieldMidColor);
-				fields[i].SetBackColor(_fieldBackColor);
+				fieldList[i].SetForeColor(_fieldForeColor);
+				fieldList[i].SetMidColor(_fieldMidColor);
+				fieldList[i].SetBackColor(_fieldBackColor);
 			}
 		}
-		public void SetFormColors(ColorPalette _palette)
+		void SetFormColors(ColorPalette _palette)
 		{
 			this.BackColor = _palette.formBackColor;
-			for (int i = 0; i < fields.Count; ++i)
+			for (int i = 0; i < fieldList.Count; ++i)
 			{
-				fields[i].SetForeColor(_palette.fieldForeColor);
-				fields[i].SetMidColor(_palette.fieldMidColor);
-				fields[i].SetBackColor(_palette.fieldBackColor);
+				fieldList[i].SetForeColor(_palette.fieldForeColor);
+				fieldList[i].SetMidColor(_palette.fieldMidColor);
+				fieldList[i].SetBackColor(_palette.fieldBackColor);
 			}
 		}
-		public void SetFieldForeColor(Color _color)
+		void SetFieldForeColor(Color _color)
 		{
-			for (int i = 0; i < fields.Count; ++i)
-				fields[i].SetForeColor(_color);
+			for (int i = 0; i < fieldList.Count; ++i)
+				fieldList[i].SetForeColor(_color);
 		}
-		public void SetFieldMidColor(Color _color)
+		void SetFieldMidColor(Color _color)
 		{
-			for (int i = 0; i < fields.Count; ++i)
-				fields[i].SetMidColor(_color);
+			for (int i = 0; i < fieldList.Count; ++i)
+				fieldList[i].SetMidColor(_color);
 		}
-		public void SetFieldBackColor(Color _color)
+		void SetFieldBackColor(Color _color)
 		{
-			for (int i = 0; i < fields.Count; ++i)
-				fields[i].SetBackColor(_color);
+			for (int i = 0; i < fieldList.Count; ++i)
+				fieldList[i].SetBackColor(_color);
 		}
 
-	} // end class CharacterProfileForm
+	} // end class
 
-} // end namespace winforms_stuff
+} // end namespace

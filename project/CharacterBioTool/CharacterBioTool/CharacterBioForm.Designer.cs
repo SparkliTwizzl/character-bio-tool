@@ -38,7 +38,7 @@
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.ClientSize = new System.Drawing.Size(1898, 1024);
 			this.Name = "CharacterBioForm";
-			this.Text = "CharacterProfileForm";
+			this.Text = "Character Bio Form";
 			this.ResumeLayout(false);
 
         }
