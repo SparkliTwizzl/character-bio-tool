@@ -59,38 +59,40 @@ namespace CharacterBioTool
 		public class Field : Panel
 		{
 			public CharacterBioForm		form;
+			public FieldDesc			desc;
 			public Label				label;
 			public Control				control;
 
 
 			public Field(CharacterBioForm _form, FieldDesc _desc)
 			{
-				// store form
+				// store values
 				form = _form;
+				desc = _desc;
 
 				// add panel to parent control
-				((_desc.addToFormPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(this);
+				((desc.addToFormPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(this);
 
 				// init panel
-				Location = (_desc.addToFormPanel) ? (_form.nextPanelFieldPosition) : (_form.nextIndependentFieldPosition);
-				if (_desc.panelStyle.width == 0 && _desc.panelStyle.height == 0) AutoSize = true;
+				Location = (desc.addToFormPanel) ? (_form.nextPanelFieldPosition) : (_form.nextIndependentFieldPosition);
+				if (desc.panelStyle.width == 0 && desc.panelStyle.height == 0) AutoSize = true;
 				Size = new Size(
-					((_desc.panelStyle.width != 0) ? (_desc.panelStyle.width) : (Math.Max(_desc.labelStyle.width, _desc.controlStyle.width))) + _desc.panelStyle.padLeft + _desc.panelStyle.padRight,
-					((_desc.panelStyle.height != 0) ? (_desc.panelStyle.height) : (_desc.labelStyle.height + _desc.controlStyle.height)) + _desc.panelStyle.padTop + _desc.panelStyle.padBottom
+					((desc.panelStyle.width != 0) ? (desc.panelStyle.width) : (Math.Max(desc.labelStyle.width, desc.controlStyle.width))) + desc.panelStyle.padLeft + desc.panelStyle.padRight,
+					((desc.panelStyle.height != 0) ? (desc.panelStyle.height) : (desc.labelStyle.height + desc.controlStyle.height)) + desc.panelStyle.padTop + desc.panelStyle.padBottom
 					);
-				if (_desc.panelStyle.border) BorderStyle = BorderStyle.FixedSingle;
-				Padding = new Padding(_desc.panelStyle.padLeft, _desc.panelStyle.padRight, _desc.panelStyle.padTop, _desc.panelStyle.padBottom);
+				if (desc.panelStyle.border) BorderStyle = BorderStyle.FixedSingle;
+				Padding = new Padding(desc.panelStyle.padLeft, desc.panelStyle.padRight, desc.panelStyle.padTop, desc.panelStyle.padBottom);
 
 				// init label
 				label = new Label();
-				label.Dock = (_desc.labelStyle.dockStyle != DockStyle.None) ? _desc.labelStyle.dockStyle : DockStyle.Top;
-				label.Text = _desc.labelStyle.text;
-				if (_desc.labelStyle.width == 0 && _desc.labelStyle.height == 0) label.AutoSize = true;
-				if (_desc.labelStyle.width != 0) label.Width = _desc.labelStyle.width;
-				if (_desc.labelStyle.height != 0) label.Height = _desc.labelStyle.height;
-				label.TextAlign = _desc.labelStyle.textAlign;
+				label.Dock = (desc.labelStyle.dockStyle != DockStyle.None) ? desc.labelStyle.dockStyle : DockStyle.Top;
+				label.Text = desc.labelStyle.text;
+				if (desc.labelStyle.width == 0 && desc.labelStyle.height == 0) label.AutoSize = true;
+				if (desc.labelStyle.width != 0) label.Width = desc.labelStyle.width;
+				if (desc.labelStyle.height != 0) label.Height = desc.labelStyle.height;
+				label.TextAlign = desc.labelStyle.textAlign;
 				label.Font = CharacterBioForm.labelFont;
-				label.BorderStyle = (_desc.labelStyle.border) ? (BorderStyle.FixedSingle) : (BorderStyle.None);
+				label.BorderStyle = (desc.labelStyle.border) ? (BorderStyle.FixedSingle) : (BorderStyle.None);
 
 				// add to panel
 				Controls.Add(label);
@@ -125,13 +127,13 @@ namespace CharacterBioTool
 				// init button
 				Button button = new Button();
 				button.Location = new Point(button.Location.X, label.Bottom);
-				button.Text = _desc.controlStyle.text;
-				if (_desc.controlStyle.width == 0 && _desc.controlStyle.height == 0) button.AutoSize = true;
-				if (_desc.controlStyle.width != 0) button.Width = _desc.controlStyle.width;
-				if (_desc.controlStyle.height != 0) button.Height = _desc.controlStyle.height;
-				if (_desc.panelStyle.height == 0 && _desc.controlStyle.height == 0)
+				button.Text = desc.controlStyle.text;
+				if (desc.controlStyle.width == 0 && desc.controlStyle.height == 0) button.AutoSize = true;
+				if (desc.controlStyle.width != 0) button.Width = desc.controlStyle.width;
+				if (desc.controlStyle.height != 0) button.Height = desc.controlStyle.height;
+				if (desc.panelStyle.height == 0 && desc.controlStyle.height == 0)
 					Height += button.Height;
-				button.TextAlign = _desc.controlStyle.textAlign;
+				button.TextAlign = desc.controlStyle.textAlign;
 
 				// add to panel
 				control = button;
@@ -160,12 +162,12 @@ namespace CharacterBioTool
 				// init text box
 				TextBox textBox = new TextBox();
 				textBox.Location = new Point(0, label.Bottom);
-				textBox.Text = _desc.controlStyle.text;
-				if (_desc.controlStyle.width != 0) textBox.Width = _desc.controlStyle.width;
-				if (_desc.controlStyle.height != 0) textBox.Height = _desc.controlStyle.height;
-				if (_desc.panelStyle.height == 0 && _desc.controlStyle.height == 0)
+				textBox.Text = desc.controlStyle.text;
+				if (desc.controlStyle.width != 0) textBox.Width = desc.controlStyle.width;
+				if (desc.controlStyle.height != 0) textBox.Height = desc.controlStyle.height;
+				if (desc.panelStyle.height == 0 && desc.controlStyle.height == 0)
 					Height += textBox.Height;
-				switch (_desc.controlStyle.textAlign)
+				switch (desc.controlStyle.textAlign)
 				{
 					default:
 					case ContentAlignment.TopLeft:
@@ -184,7 +186,7 @@ namespace CharacterBioTool
 						textBox.TextAlign = HorizontalAlignment.Right;
 						break;
 				}
-				textBox.BorderStyle = (_desc.controlStyle.border) ? (BorderStyle.Fixed3D) : (BorderStyle.None);
+				textBox.BorderStyle = (desc.controlStyle.border) ? (BorderStyle.Fixed3D) : (BorderStyle.None);
 				textBox.Font = CharacterBioForm.textBoxFont;
 				textBox.WordWrap = true;
 
@@ -212,7 +214,7 @@ namespace CharacterBioTool
 		#region enums, structs
 
 		// color
-		struct ColorPalette
+		public struct ColorPalette
 		{
 			public Color	formBackColor;
 			public Color	fieldForeColor;
@@ -236,18 +238,18 @@ namespace CharacterBioTool
 		#region form variables
 
 		// window
-		const int				windowWidth = 1600;
-		const int				windowHeight = 900;
-		static readonly Size	windowSize = new Size(windowWidth, windowHeight);
+		public const int				windowWidth = 1600;
+		public const int				windowHeight = 900;
+		public static readonly Size		windowSize = new Size(windowWidth, windowHeight);
 
 
 		// fonts
-		static readonly Font	labelFont = new Font("Roboto", 11, FontStyle.Bold);
-		static readonly Font	textBoxFont = new Font("Roboto", 10);
+		public static readonly Font		labelFont = new Font("Roboto", 11, FontStyle.Bold);
+		public static readonly Font		textBoxFont = new Font("Roboto", 10);
 
 
 		// color modes
-		enum COLOR_MODE
+		public enum COLOR_MODE
 		{
 			DARK,
 			GREY,
@@ -256,8 +258,8 @@ namespace CharacterBioTool
 			MIN = DARK,
 			MAX = LIGHT,
 		}
-		COLOR_MODE				colorMode = COLOR_MODE.LIGHT;
-		ColorPalette[]			palettes = new ColorPalette[]
+		public COLOR_MODE				colorMode = COLOR_MODE.LIGHT;
+		public ColorPalette[]			palettes = new ColorPalette[]
 		{
 			//				 form back color					field fore color					field mid color						field back color
 			new ColorPalette(GreyTone(0x1f),					Color.White,						GreyTone(0x67),						GreyTone(0x4f)), // dark
@@ -267,19 +269,20 @@ namespace CharacterBioTool
 
 
 		// location/spacing
-		const int				originX = 20;
-		const int				originY = 20;
+		public const int				originX = 20;
+		public const int				originY = 20;
 
-		const int				fieldSpacingX = 50;
-		readonly int			fieldSpacingY = (int)(labelFont.Size);
+		public const int				fieldSpacingX = 50;
+		public readonly int				fieldSpacingY = (int)(labelFont.Size);
 
-		static readonly int		defaultLabelWidth = 200;
-		static readonly int		defaultLabelHeight = (int)(labelFont.Size * 2.25f);
-		static readonly int		defaultControlWidth = defaultLabelWidth;
-		static readonly int		defaultControlHeight = 50;
+		public static readonly int		defaultLabelWidth = 200;
+		public static readonly int		defaultLabelHeight = (int)(labelFont.Size * 2.25f);
+		public static readonly int		defaultControlWidth = defaultLabelWidth;
+		static readonly int				defaultControlHeight = 50;
 
-		Point					nextIndependentFieldPosition = new Point(originX, originY);
-		Point					nextPanelFieldPosition = new Point(originX, originY);
+		public Point					nextIndependentFieldPosition = new Point(originX, originY);
+		public Point					nextPanelFieldPosition = new Point(originX, originY);
+
 
 
 		// fields
@@ -311,13 +314,13 @@ namespace CharacterBioTool
 
 			COUNT
 		}
-		FieldDesc[] fieldDescriptors = new FieldDesc[]
+		public FieldDesc[] fieldDescriptors = new FieldDesc[]
 		{
 			new FieldDesc
 			{
 				type = FIELD_TYPE.BUTTON,
 				addToFormPanel = false,
-				new ControlStyle
+				panelStyle = new ControlStyle
 				{
 					border = true,
 					padLeft = 5,
@@ -325,7 +328,7 @@ namespace CharacterBioTool
 					padTop = 5,
 					padBottom = 5,
 				},
-				new ControlStyle
+				labelStyle = new ControlStyle
 				{
 					text = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.COLOR_MODE)),
 					textAlign = ContentAlignment.MiddleCenter,
@@ -333,7 +336,7 @@ namespace CharacterBioTool
 					height = defaultLabelHeight,
 					border = true,
 				},
-				new ControlStyle
+				controlStyle = new ControlStyle
 				{
 					textAlign = ContentAlignment.MiddleCenter,
 					width = 100,
@@ -344,52 +347,59 @@ namespace CharacterBioTool
 			{
 				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
-				new ControlStyle{ },
-				new ControlStyle{ },
-				new ControlStyle{ },
-
-				border = true,
-				padLeft = 5,
-				padRight = 5,
-				padTop = 5,
-				padBottom = 5,
-
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NAME)),
-				labelWidth = defaultLabelWidth,
-				labelHeight = defaultLabelHeight,
-				labelTextAlign = ContentAlignment.MiddleLeft,
-				labelBorder = true,
-
-				controlText = "test",
-				controlWidth = defaultControlWidth,
-				controlTextAlign = (ContentAlignment)HorizontalAlignment.Left,
+				panelStyle = new ControlStyle
+				{
+					border = true,
+					padLeft = 5,
+					padRight = 5,
+					padTop = 5,
+					padBottom = 5,
+				},
+				labelStyle = new ControlStyle
+				{
+					text = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NAME)),
+					textAlign = ContentAlignment.MiddleLeft,
+					width = defaultLabelWidth,
+					height = defaultLabelHeight,
+					border = true,
+				},
+				controlStyle = new ControlStyle
+				{
+					text = "test",
+					textAlign = (ContentAlignment)HorizontalAlignment.Left,
+					width = defaultControlWidth,
+				},
 			},
 			new FieldDesc
 			{
 				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
-				new ControlStyle{ },
-				new ControlStyle{ },
-				new ControlStyle{ },
-
-				border = true,
-				padLeft = 5,
-				padRight = 5,
-				padTop = 5,
-				padBottom = 5,
-
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NICKNAME)),
-				labelWidth = defaultLabelWidth,
-				labelHeight = defaultLabelHeight,
-				labelTextAlign = ContentAlignment.MiddleLeft,
-
-				controlText = "a",
-				controlWidth = defaultControlWidth,
-				controlTextAlign = (ContentAlignment)HorizontalAlignment.Left,
+				panelStyle = new ControlStyle
+				{
+					border = true,
+					padLeft = 5,
+					padRight = 5,
+					padTop = 5,
+					padBottom = 5,
+				},
+				labelStyle = new ControlStyle
+				{
+					text = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NICKNAME)),
+					textAlign = ContentAlignment.MiddleLeft,
+					width = defaultLabelWidth,
+					height = defaultLabelHeight,
+					border = true,
+				},
+				controlStyle = new ControlStyle
+				{
+					text = "asdf",
+					textAlign = (ContentAlignment)HorizontalAlignment.Left,
+					width = defaultControlWidth,
+				},
 			},
 		};
-		Panel			fieldPanel = new Panel();
-		List<Field>		fieldList = new List<Field>();
+		public Panel					fieldPanel = new Panel();
+		public List<Field>				fieldList = new List<Field>();
 
 		#endregion form variables
 
