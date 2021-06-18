@@ -30,38 +30,40 @@ namespace CharacterBioTool
 
 		public struct ControlStyle
 		{
-			public String				text;
-			public ContentAlignment		textAlign;
-			public DockStyle			dockStyle;
-			public bool					autoSize;
-			public int					width;
-			public int					height;
-			public bool					border;
-			public int					padLeft;
-			public int					padRight;
-			public int					padTop;
-			public int					padBottom;
-			public int					marginLeft;
-			public int					marginRight;
-			public int					marginTop;
-			public int					marginBottom;
+			//public String				text { get; set; }
+			public ContentAlignment		textAlign { get; set; }
+			public DockStyle			dockStyle { get; set; }
+			public bool					autoSize { get; set; }
+			public int					width { get; set; }
+			public int					height { get; set; }
+			public bool					border { get; set; }
+			public int					padLeft { get; set; }
+			public int					padRight { get; set; }
+			public int					padTop { get; set; }
+			public int					padBottom { get; set; }
+			public int					marginLeft { get; set; }
+			public int					marginRight { get; set; }
+			public int					marginTop { get; set; }
+			public int					marginBottom { get; set; }
 		}
 		public struct FieldDesc
 		{
-			public FIELD_TYPE			type;
-			public bool					addToFormPanel;
-			public ControlStyle			panelStyle;
-			public ControlStyle			labelStyle;
-			public ControlStyle			controlStyle;
+			public FIELD_TYPE			type { get; set; }
+			public bool					addToFormPanel { get; set; }
+			public ControlStyle			panelStyle { get; set; }
+			public String				labelText { get; set; }
+			public ControlStyle			labelStyle { get; set; }
+			public String				controlText { get; set; }
+			public ControlStyle			controlStyle { get; set; }
 		}
 
 
 		public class Field : Panel
 		{
-			public CharacterBioForm		form;
-			public FieldDesc			desc;
-			public Label				label;
-			public Control				control;
+			private CharacterBioForm	form;
+			public FieldDesc			desc { get; set; }
+			public Label				label { get; set; }
+			public Control				control { get; set; }
 
 
 			public Field(CharacterBioForm _form, FieldDesc _desc)
@@ -85,8 +87,8 @@ namespace CharacterBioTool
 
 				// init label
 				label = new Label();
-				label.Dock = (desc.labelStyle.dockStyle != DockStyle.None) ? desc.labelStyle.dockStyle : DockStyle.Top;
-				label.Text = desc.labelStyle.text;
+				label.Dock = (desc.labelStyle.dockStyle != DockStyle.None) ? (desc.labelStyle.dockStyle) : (DockStyle.Top);
+				label.Text = desc.labelText;
 				if (desc.labelStyle.width == 0 && desc.labelStyle.height == 0) label.AutoSize = true;
 				if (desc.labelStyle.width != 0) label.Width = desc.labelStyle.width;
 				if (desc.labelStyle.height != 0) label.Height = desc.labelStyle.height;
@@ -126,8 +128,8 @@ namespace CharacterBioTool
 			{
 				// init button
 				Button button = new Button();
-				button.Location = new Point(button.Location.X, label.Bottom);
-				button.Text = desc.controlStyle.text;
+				button.Dock = (desc.controlStyle.dockStyle != DockStyle.None) ? (desc.controlStyle.dockStyle) : (DockStyle.Bottom);
+				button.Text = desc.controlText;
 				if (desc.controlStyle.width == 0 && desc.controlStyle.height == 0) button.AutoSize = true;
 				if (desc.controlStyle.width != 0) button.Width = desc.controlStyle.width;
 				if (desc.controlStyle.height != 0) button.Height = desc.controlStyle.height;
@@ -161,8 +163,8 @@ namespace CharacterBioTool
 			{
 				// init text box
 				TextBox textBox = new TextBox();
-				textBox.Location = new Point(0, label.Bottom);
-				textBox.Text = desc.controlStyle.text;
+				textBox.Dock = (desc.controlStyle.dockStyle != DockStyle.None) ? (desc.controlStyle.dockStyle) : (DockStyle.Bottom);
+				textBox.Text = desc.controlText;
 				if (desc.controlStyle.width != 0) textBox.Width = desc.controlStyle.width;
 				if (desc.controlStyle.height != 0) textBox.Height = desc.controlStyle.height;
 				if (desc.panelStyle.height == 0 && desc.controlStyle.height == 0)
@@ -244,8 +246,8 @@ namespace CharacterBioTool
 
 
 		// fonts
-		public static readonly Font		labelFont = new Font("Roboto", 11, FontStyle.Bold);
-		public static readonly Font		textBoxFont = new Font("Roboto", 10);
+		public static readonly Font		labelFont = new Font("Roboto", 10, FontStyle.Bold);
+		public static readonly Font		textBoxFont = new Font("Roboto", 9);
 
 
 		// color modes
@@ -278,7 +280,7 @@ namespace CharacterBioTool
 		public static readonly int		defaultLabelWidth = 200;
 		public static readonly int		defaultLabelHeight = (int)(labelFont.Size * 2.25f);
 		public static readonly int		defaultControlWidth = defaultLabelWidth;
-		static readonly int				defaultControlHeight = 50;
+		public static readonly int		defaultControlHeight = 50;
 
 		public Point					nextIndependentFieldPosition = new Point(originX, originY);
 		public Point					nextPanelFieldPosition = new Point(originX, originY);
@@ -314,23 +316,39 @@ namespace CharacterBioTool
 
 			COUNT
 		}
+
+		public static ControlStyle		defaultPanelStyle = new ControlStyle
+		{
+			border = true,
+			padLeft = 5,
+			padRight = 5,
+			padTop = 5,
+			padBottom = 5,
+		};
+		public static ControlStyle		defaultTextFieldLabelStyle = new ControlStyle
+		{
+			textAlign = ContentAlignment.MiddleLeft,
+			width = defaultLabelWidth,
+			height = defaultLabelHeight,
+			border = true,
+		};
+		public static ControlStyle		defaultTextFieldControlStyle = new ControlStyle
+		{
+			textAlign = (ContentAlignment)HorizontalAlignment.Left,
+			width = defaultControlWidth,
+			border = true,
+		};
+
 		public FieldDesc[] fieldDescriptors = new FieldDesc[]
 		{
 			new FieldDesc
 			{
 				type = FIELD_TYPE.BUTTON,
 				addToFormPanel = false,
-				panelStyle = new ControlStyle
-				{
-					border = true,
-					padLeft = 5,
-					padRight = 5,
-					padTop = 5,
-					padBottom = 5,
-				},
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.COLOR_MODE)),
 				labelStyle = new ControlStyle
 				{
-					text = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.COLOR_MODE)),
 					textAlign = ContentAlignment.MiddleCenter,
 					width = 100,
 					height = defaultLabelHeight,
@@ -347,55 +365,190 @@ namespace CharacterBioTool
 			{
 				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
-				panelStyle = new ControlStyle
-				{
-					border = true,
-					padLeft = 5,
-					padRight = 5,
-					padTop = 5,
-					padBottom = 5,
-				},
-				labelStyle = new ControlStyle
-				{
-					text = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NAME)),
-					textAlign = ContentAlignment.MiddleLeft,
-					width = defaultLabelWidth,
-					height = defaultLabelHeight,
-					border = true,
-				},
-				controlStyle = new ControlStyle
-				{
-					text = "test",
-					textAlign = (ContentAlignment)HorizontalAlignment.Left,
-					width = defaultControlWidth,
-				},
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NAME)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
 			},
 			new FieldDesc
 			{
 				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
-				panelStyle = new ControlStyle
-				{
-					border = true,
-					padLeft = 5,
-					padRight = 5,
-					padTop = 5,
-					padBottom = 5,
-				},
-				labelStyle = new ControlStyle
-				{
-					text = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NICKNAME)),
-					textAlign = ContentAlignment.MiddleLeft,
-					width = defaultLabelWidth,
-					height = defaultLabelHeight,
-					border = true,
-				},
-				controlStyle = new ControlStyle
-				{
-					text = "asdf",
-					textAlign = (ContentAlignment)HorizontalAlignment.Left,
-					width = defaultControlWidth,
-				},
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NICKNAME)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.RACE)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.GENDER)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.SEX)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.BIRTH_DATE)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.DEATH_DATE)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.LITERAL_AGE)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.PHYSICAL_AGE)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.APPARENT_AGE)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.HEIGHT)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.WEIGHT)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.BUILD)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.SKIN_COLOR)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.EYE_COLOR)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.HAIR_LENGTH)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.HAIR_STYLE)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.HAIR_COLOR)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.FACIAL_HAIR_LENGTH)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.FACIAL_HAIR_STYLE)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
+			},
+			new FieldDesc
+			{
+				type = FIELD_TYPE.TEXT_BOX,
+				addToFormPanel = true,
+				panelStyle = defaultPanelStyle,
+				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.FACIAL_HAIR_COLOR)),
+				labelStyle = defaultTextFieldLabelStyle,
+				controlStyle = defaultTextFieldControlStyle,
 			},
 		};
 		public Panel					fieldPanel = new Panel();
@@ -451,8 +604,10 @@ namespace CharacterBioTool
 		void AddField(Field _field)
 		{
 			fieldList.Add(_field as Field);
-			nextIndependentFieldPosition.Y = _field.Bottom + fieldSpacingY;
-			nextPanelFieldPosition.Y = _field.Bottom + fieldSpacingY;
+			if (_field.desc.addToFormPanel)
+				nextPanelFieldPosition.Y = _field.Bottom + fieldSpacingY;
+			else
+				nextIndependentFieldPosition.Y = _field.Bottom + fieldSpacingY;
 		}
 		void RemoveField(Field _field) { fieldList.Remove(_field); }
 
@@ -525,8 +680,6 @@ namespace CharacterBioTool
 			Controls.Add(fieldPanel);
 
 			// init fields and add them to form
-			List<Field> independentFields = new List<Field>();
-			List<Field> panelFields = new List<Field>();
 			for (int i = 0; i < fieldDescriptors.Length; ++i)
 			{
 				switch (fieldDescriptors[i].type)
@@ -543,14 +696,6 @@ namespace CharacterBioTool
 						break;
 				}
 			}
-			for (int i = 0; i < independentFields.Count; ++i)
-			{
-
-			}
-			for (int i = 0; i < panelFields.Count; ++i)
-			{
-
-			}
 
 			// set initial color mode
 			SetColorMode(colorMode);
@@ -561,8 +706,8 @@ namespace CharacterBioTool
 			// set color mode button behavior with event handler lambda
 			GetField(FIELD_NAME.COLOR_MODE).control.Click += (obj, eventArgs) =>
 			{
-				this.ActiveControl = null; // defocus button after clicking it
-				colorMode = (colorMode == COLOR_MODE.MAX) ? (COLOR_MODE.MIN) : (colorMode + 1);
+				ActiveControl = null; // defocus button after clicking it
+				colorMode = (colorMode == COLOR_MODE.MAX) ? (COLOR_MODE.MIN) : (colorMode + 1); // cycle to next color mode
 				SetColorMode(colorMode);
 			};
 		}
