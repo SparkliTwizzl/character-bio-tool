@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,7 +21,103 @@ namespace CharacterBioTool
 
 		// wrapper classes for winform controls to bundle labels with other functionality
 		// fields are limited to one functional control each
-		
+
+		public enum FIELD_TYPE
+		{
+			BASIC,
+			BUTTON,
+			TEXT_BOX,
+		}
+
+		public struct ControlStyle
+		{
+			public ContentAlignment		textAlign { get; set; }
+			public DockStyle			dockStyle { get; set; }
+			public bool					autoSize { get; set; }
+			public int					width { get; set; }
+			public int					height { get; set; }
+			public bool					border { get; set; }
+			public int					padLeft { get; set; }
+			public int					padRight { get; set; }
+			public int					padTop { get; set; }
+			public int					padBottom { get; set; }
+			public int					marginLeft { get; set; }
+			public int					marginRight { get; set; }
+			public int					marginTop { get; set; }
+			public int					marginBottom { get; set; }
+		}
+		public struct FieldDesc
+		{
+			public FIELD_TYPE			type { get; set; }
+			public bool					addToFormPanel { get; set; }
+			public ControlStyle			panelStyle { get; set; }
+			public string				labelText { get; set; }
+			public ControlStyle			labelStyle { get; set; }
+			public string				controlText { get; set; }
+			public ControlStyle			controlStyle { get; set; }
+		}
+
+
+		public class Field : Panel
+		{
+			private CharacterBioForm	form;
+			public FieldDesc			desc { get; set; }
+			public Label				label { get; set; }
+			public Control				control { get; set; }
+
+
+			public Field(CharacterBioForm _form, FieldDesc _desc)
+			{
+				// store values
+				form = _form;
+				desc = _desc;
+
+				// add panel to parent control
+				((desc.addToFormPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(this);
+
+				// init panel
+				Location = (desc.addToFormPanel) ? (_form.nextPanelFieldPosition) : (_form.nextIndependentFieldPosition);
+				if (desc.panelStyle.width == 0 && desc.panelStyle.height == 0) AutoSize = true;
+				Size = new Size(
+					((desc.panelStyle.width != 0) ? (desc.panelStyle.width) : (Math.Max(desc.labelStyle.width, desc.controlStyle.width))) + desc.panelStyle.padLeft + desc.panelStyle.padRight,
+					((desc.panelStyle.height != 0) ? (desc.panelStyle.height) : (desc.labelStyle.height + desc.controlStyle.height)) + desc.panelStyle.padTop + desc.panelStyle.padBottom
+					);
+				if (desc.panelStyle.border) BorderStyle = BorderStyle.FixedSingle;
+				Padding = new Padding(desc.panelStyle.padLeft, desc.panelStyle.padRight, desc.panelStyle.padTop, desc.panelStyle.padBottom);
+
+				// init label
+				label = new Label();
+				label.Dock = (desc.labelStyle.dockStyle != DockStyle.None) ? (desc.labelStyle.dockStyle) : (DockStyle.Top);
+				label.Text = desc.labelText;
+				if (desc.labelStyle.width == 0 && desc.labelStyle.height == 0) label.AutoSize = true;
+				if (desc.labelStyle.width != 0) label.Width = desc.labelStyle.width;
+				if (desc.labelStyle.height != 0) label.Height = desc.labelStyle.height;
+				label.TextAlign = desc.labelStyle.textAlign;
+				label.Font = CharacterBioForm.labelFont;
+				label.BorderStyle = (desc.labelStyle.border) ? (BorderStyle.FixedSingle) : (BorderStyle.None);
+
+				// add to panel
+				Controls.Add(label);
+			}
+
+			~Field()
+			{
+				form.Controls.Remove(label);
+			}
+
+			public virtual void SetForeColor(Color _color)
+			{
+				label.ForeColor = _color;
+			}
+			public virtual void SetMidColor(Color _color)
+			{
+				label.BackColor = _color;
+			}
+			public virtual void SetBackColor(Color _color)
+			{
+				BackColor = _color;
+			}
+		} // end class
 		public class ButtonField : Field
 		{
 			//public Button button;
@@ -117,30 +213,6 @@ namespace CharacterBioTool
 
 
 
-		#region enums, structs
-
-		// color
-		public struct ColorPalette
-		{
-			public Color	formBackColor;
-			public Color	fieldForeColor;
-			public Color	fieldMidColor;
-			public Color	fieldBackColor;
-
-			public ColorPalette(Color _formBackColor, Color _fieldForeColor, Color _fieldMidColor, Color _fieldBackColor)
-			{
-				formBackColor = _formBackColor;
-				fieldForeColor = _fieldForeColor;
-				fieldMidColor = _fieldMidColor;
-				fieldBackColor = _fieldBackColor;
-			}
-		}
-
-
-		#endregion enums, structs
-
-
-
 		#region form variables
 
 		// window
@@ -155,6 +227,14 @@ namespace CharacterBioTool
 
 
 		// color modes
+		public struct ColorPalette
+		{
+			public string	name { get; set; }
+			public Color	formBackColor { get; set; }
+			public Color	fieldForeColor { get; set; }
+			public Color	fieldMidColor { get; set; }
+			public Color	fieldBackColor { get; set; }
+		}
 		public enum COLOR_MODE
 		{
 			DARK,
@@ -167,10 +247,30 @@ namespace CharacterBioTool
 		public COLOR_MODE				colorMode = COLOR_MODE.LIGHT;
 		public ColorPalette[]			palettes = new ColorPalette[]
 		{
-			//				 form back color					field fore color					field mid color						field back color
-			new ColorPalette(GreyTone(0x1f),					Color.White,						GreyTone(0x67),						GreyTone(0x4f)), // dark
-			new ColorPalette(GreyTone(0x6f),					Color.White,						GreyTone(0x67),						GreyTone(0x7f)), // grey
-			new ColorPalette(GreyTone(0xcf),					Color.Black,						Color.White,						GreyTone(0xe7)), // light
+			new ColorPalette
+			{
+				name = "dark",
+				formBackColor	= CreateGreyColor(0x1f),
+				fieldForeColor	= Color.White,
+				fieldMidColor	= CreateGreyColor(0x67),
+				fieldBackColor	= CreateGreyColor(0x4f)
+			},
+			new ColorPalette
+			{
+				name = "grey",
+				formBackColor	= CreateGreyColor(0x6f),
+				fieldForeColor	= Color.White,
+				fieldMidColor	= CreateGreyColor(0x67),
+				fieldBackColor	= CreateGreyColor(0x7f)
+			},
+			new ColorPalette
+			{
+				name = "light",
+				formBackColor	= CreateGreyColor(0xcf),
+				fieldForeColor	= Color.Black,
+				fieldMidColor	= Color.White,
+				fieldBackColor	= CreateGreyColor(0xe7)
+				},
 		};
 
 
@@ -464,44 +564,56 @@ namespace CharacterBioTool
 
 		#region helper functions
 
-		// generates a Color with the specified grey tone
-		public static Color GreyTone(int _tone) { return Color.FromArgb(_tone, _tone, _tone); }
+		// generates a Color with the specified brightness level
+		public static Color CreateGreyColor(int _brightness) { return Color.FromArgb(_brightness, _brightness, _brightness); }
 
-		// converts a CAP_CASE string to First Capitals Case
-		public static string CapCaseToFirstCaps(string _str)
+		public static string ConvertStringCaseToFirstCaps(string _string)
 		{
-			StringBuilder str = new StringBuilder();
+			char[] stringAsChars = _string.ToLower().ToCharArray();
+			// TODO: find & capitalize every letter that does not have a letter before it
+			return new string(stringAsChars);
+		}
 
-			// convert string to lowercase first so each letter doesn't have to be converted separately
-			_str = _str.ToLower();
-			// handle first letter separately, since there is no previous letter to compare it to
-			// replace underscore with space
-			if (_str[0] == '_')
-				str.Append(' ');
-			// capitalize char
-			else
-				str.Append(_str[0].ToString().ToUpper());
 
-			// handle rest of string
-			for (int i = 1; i < _str.Length; ++i)
-			{
-				// replace underscores with spaces
-				if (_str[i] == '_')
-				{
-					str.Append(' ');
-				}
-				else
-				{
-					// if previous char is underscore, capitalize this char
-					if (_str[i - 1] == '_')
-						str.Append(_str[i].ToString().ToUpper());
-					// otherwise, add char unmodified
-					else
-						str.Append(_str[i]);
-				}
-			}
 
-			return str.ToString();
+		// converts a string from snake_case to First Capitals Case
+		public static string ConvertStringCaseFromSnakeToFirstCaps(string _str)
+		{
+			//StringBuilder str = new StringBuilder();
+
+			//// convert string to lowercase first so each letter doesn't have to be converted separately
+			//_str = _str.ToLower();
+			//// handle first letter separately, since there is no previous letter to compare it to
+			//// replace underscore with space
+			//if (_str[0] == '_')
+			//	str.Append(' ');
+			//// capitalize char
+			//else
+			//	str.Append(_str[0].ToString().ToUpper());
+
+			//// handle rest of string
+			//for (int i = 1; i < _str.Length; ++i)
+			//{
+			//	// replace underscores with spaces
+			//	if (_str[i] == '_')
+			//	{
+			//		str.Append(' ');
+			//	}
+			//	else
+			//	{
+			//		// if previous char is underscore, capitalize this char
+			//		if (_str[i - 1] == '_')
+			//			str.Append(_str[i].ToString().ToUpper());
+			//		// otherwise, add char unmodified
+			//		else
+			//			str.Append(_str[i]);
+			//	}
+			//}
+
+			//return str.ToString();
+
+
+			// TODO: rewrite using string manip functions
 		}
 
 		// functions to manage fields
@@ -549,11 +661,11 @@ namespace CharacterBioTool
 		#endregion helper functions
 
 
-
-		// main form method
+		
 		public CharacterBioForm()
 		{
 			InitializeComponent();
+			Size = windowSize;
 
 
 			// create lambdas
@@ -569,10 +681,6 @@ namespace CharacterBioTool
 				SetFormColors(palette);
 				GetField(FIELD_NAME.COLOR_MODE).control.Text = Convert.ToString(colorMode);
 			};
-
-
-			// set initial window size
-			Size = windowSize;
 
 
 			// init control panel
