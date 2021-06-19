@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,7 +30,6 @@ namespace CharacterBioTool
 
 		public struct ControlStyle
 		{
-			//public String				text { get; set; }
 			public ContentAlignment		textAlign { get; set; }
 			public DockStyle			dockStyle { get; set; }
 			public bool					autoSize { get; set; }
@@ -51,9 +50,9 @@ namespace CharacterBioTool
 			public FIELD_TYPE			type { get; set; }
 			public bool					addToFormPanel { get; set; }
 			public ControlStyle			panelStyle { get; set; }
-			public String				labelText { get; set; }
+			public string				labelText { get; set; }
 			public ControlStyle			labelStyle { get; set; }
-			public String				controlText { get; set; }
+			public string				controlText { get; set; }
 			public ControlStyle			controlStyle { get; set; }
 		}
 
@@ -213,30 +212,6 @@ namespace CharacterBioTool
 
 
 
-		#region enums, structs
-
-		// color
-		public struct ColorPalette
-		{
-			public Color	formBackColor;
-			public Color	fieldForeColor;
-			public Color	fieldMidColor;
-			public Color	fieldBackColor;
-
-			public ColorPalette(Color _formBackColor, Color _fieldForeColor, Color _fieldMidColor, Color _fieldBackColor)
-			{
-				formBackColor = _formBackColor;
-				fieldForeColor = _fieldForeColor;
-				fieldMidColor = _fieldMidColor;
-				fieldBackColor = _fieldBackColor;
-			}
-		}
-
-
-		#endregion enums, structs
-
-
-
 		#region form variables
 
 		// window
@@ -251,6 +226,14 @@ namespace CharacterBioTool
 
 
 		// color modes
+		public struct ColorPalette
+		{
+			public string	name { get; set; }
+			public Color	formBackColor { get; set; }
+			public Color	fieldForeColor { get; set; }
+			public Color	fieldMidColor { get; set; }
+			public Color	fieldBackColor { get; set; }
+		}
 		public enum COLOR_MODE
 		{
 			DARK,
@@ -263,10 +246,30 @@ namespace CharacterBioTool
 		public COLOR_MODE				colorMode = COLOR_MODE.LIGHT;
 		public ColorPalette[]			palettes = new ColorPalette[]
 		{
-			//				 form back color					field fore color					field mid color						field back color
-			new ColorPalette(GreyTone(0x1f),					Color.White,						GreyTone(0x67),						GreyTone(0x4f)), // dark
-			new ColorPalette(GreyTone(0x6f),					Color.White,						GreyTone(0x67),						GreyTone(0x7f)), // grey
-			new ColorPalette(GreyTone(0xcf),					Color.Black,						Color.White,						GreyTone(0xe7)), // light
+			new ColorPalette
+			{
+				name = "dark",
+				formBackColor	= CreateGreyColor(0x1f),
+				fieldForeColor	= Color.White,
+				fieldMidColor	= CreateGreyColor(0x67),
+				fieldBackColor	= CreateGreyColor(0x4f)
+			},
+			new ColorPalette
+			{
+				name = "grey",
+				formBackColor	= CreateGreyColor(0x6f),
+				fieldForeColor	= Color.White,
+				fieldMidColor	= CreateGreyColor(0x67),
+				fieldBackColor	= CreateGreyColor(0x7f)
+			},
+			new ColorPalette
+			{
+				name = "light",
+				formBackColor	= CreateGreyColor(0xcf),
+				fieldForeColor	= Color.Black,
+				fieldMidColor	= Color.White,
+				fieldBackColor	= CreateGreyColor(0xe7)
+				},
 		};
 
 
@@ -560,44 +563,63 @@ namespace CharacterBioTool
 
 		#region helper functions
 
-		// generates a Color with the specified grey tone
-		public static Color GreyTone(int _tone) { return Color.FromArgb(_tone, _tone, _tone); }
+		// generates a Color with the specified brightness level
+		public static Color CreateGreyColor(int _brightness) { return Color.FromArgb(_brightness, _brightness, _brightness); }
 
-		// converts a CAP_CASE string to First Capitals Case
-		public static String CapCaseToFirstCaps(String _str)
+		public static string ReplaceCharactersInString(string _string, char[] _toReplace, char[] _replaceWith)
 		{
-			StringBuilder str = new StringBuilder();
+			// TODO: validate args
+			char[] stringAsChars = _string.ToCharArray();
+			// TODO: find & replace chars
+			return new string(stringAsChars);
+		}
+		public static string ConvertStringCaseToFirstCaps(string _string)
+		{
+			char[] stringAsChars = _string.ToLower().ToCharArray();
+			// TODO: find & capitalize every letter that does not have a letter before it
+			return new string(stringAsChars);
+		}
 
-			// convert string to lowercase first so each letter doesn't have to be converted separately
-			_str = _str.ToLower();
-			// handle first letter separately, since there is no previous letter to compare it to
-			// replace underscore with space
-			if (_str[0] == '_')
-				str.Append(' ');
-			// capitalize char
-			else
-				str.Append(_str[0].ToString().ToUpper());
 
-			// handle rest of string
-			for (int i = 1; i < _str.Length; ++i)
-			{
-				// replace underscores with spaces
-				if (_str[i] == '_')
-				{
-					str.Append(' ');
-				}
-				else
-				{
-					// if previous char is underscore, capitalize this char
-					if (_str[i - 1] == '_')
-						str.Append(_str[i].ToString().ToUpper());
-					// otherwise, add char unmodified
-					else
-						str.Append(_str[i]);
-				}
-			}
 
-			return str.ToString();
+		// converts a string from snake_case to First Capitals Case
+		public static string ConvertStringCaseFromSnakeToFirstCaps(string _str)
+		{
+			//StringBuilder str = new StringBuilder();
+
+			//// convert string to lowercase first so each letter doesn't have to be converted separately
+			//_str = _str.ToLower();
+			//// handle first letter separately, since there is no previous letter to compare it to
+			//// replace underscore with space
+			//if (_str[0] == '_')
+			//	str.Append(' ');
+			//// capitalize char
+			//else
+			//	str.Append(_str[0].ToString().ToUpper());
+
+			//// handle rest of string
+			//for (int i = 1; i < _str.Length; ++i)
+			//{
+			//	// replace underscores with spaces
+			//	if (_str[i] == '_')
+			//	{
+			//		str.Append(' ');
+			//	}
+			//	else
+			//	{
+			//		// if previous char is underscore, capitalize this char
+			//		if (_str[i - 1] == '_')
+			//			str.Append(_str[i].ToString().ToUpper());
+			//		// otherwise, add char unmodified
+			//		else
+			//			str.Append(_str[i]);
+			//	}
+			//}
+
+			//return str.ToString();
+
+
+			// TODO: rewrite using string manip functions
 		}
 
 		// functions to manage fields
@@ -645,11 +667,11 @@ namespace CharacterBioTool
 		#endregion helper functions
 
 
-
-		// main form method
+		
 		public CharacterBioForm()
 		{
 			InitializeComponent();
+			Size = windowSize;
 
 
 			// create lambdas
@@ -665,10 +687,6 @@ namespace CharacterBioTool
 				SetFormColors(palette);
 				GetField(FIELD_NAME.COLOR_MODE).control.Text = Convert.ToString(colorMode);
 			};
-
-
-			// set initial window size
-			Size = windowSize;
 
 
 			// init control panel
