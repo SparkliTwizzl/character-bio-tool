@@ -21,7 +21,6 @@ namespace CharacterBioTool
 		}
 		public struct ControlStyle
 		{
-			//public string				text { get; set; }
 			public ContentAlignment		textAlign { get; set; }
 			public DockStyle			dockStyle { get; set; }
 			public bool					autoSize { get; set; }
@@ -57,24 +56,44 @@ namespace CharacterBioTool
 
 		public Field(CharacterBioForm _form, Desc _desc)
 		{
-			// store values
 			form = _form;
 			desc = _desc;
+			AddFieldToParentControl();
+			InitPanel();
+			InitLabel();
+		}
 
-			// add panel to parent control
+		~Field()
+		{
+			form.Controls.Remove(label);
+		}
+
+		private void AddFieldToParentControl()
+		{
 			((desc.addToFormPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(this);
-
-			// init panel
-			Location = (desc.addToFormPanel) ? (_form.nextPanelFieldPosition) : (_form.nextIndependentFieldPosition);
+		}
+		private void InitPanel()
+		{
+			Location = (desc.addToFormPanel)
+				? (form.nextPanelFieldPosition)
+				: (form.nextIndependentFieldPosition);
 			if (desc.panelStyle.width == 0 && desc.panelStyle.height == 0) AutoSize = true;
 			Size = new Size(
-				((desc.panelStyle.width != 0) ? (desc.panelStyle.width) : (Math.Max(desc.labelStyle.width, desc.controlStyle.width))) + desc.panelStyle.padLeft + desc.panelStyle.padRight,
-				((desc.panelStyle.height != 0) ? (desc.panelStyle.height) : (desc.labelStyle.height + desc.controlStyle.height)) + desc.panelStyle.padTop + desc.panelStyle.padBottom
+				((desc.panelStyle.width != 0)
+					? (desc.panelStyle.width)
+					: (Math.Max(desc.labelStyle.width, desc.controlStyle.width)))
+						+ desc.panelStyle.padLeft + desc.panelStyle.padRight,
+				((desc.panelStyle.height != 0)
+					? (desc.panelStyle.height)
+					: (desc.labelStyle.height + desc.controlStyle.height))
+						+ desc.panelStyle.padTop + desc.panelStyle.padBottom
 				);
 			if (desc.panelStyle.border) BorderStyle = BorderStyle.FixedSingle;
-			Padding = new Padding(desc.panelStyle.padLeft, desc.panelStyle.padRight, desc.panelStyle.padTop, desc.panelStyle.padBottom);
-
-			// init label
+			Padding = new Padding(desc.panelStyle.padLeft, desc.panelStyle.padRight,
+				desc.panelStyle.padTop, desc.panelStyle.padBottom);
+		}
+		private void InitLabel()
+		{
 			label = new Label();
 			label.Dock = (desc.labelStyle.dockStyle != DockStyle.None) ? (desc.labelStyle.dockStyle) : (DockStyle.Top);
 			label.Text = desc.labelText;
@@ -84,14 +103,7 @@ namespace CharacterBioTool
 			label.TextAlign = desc.labelStyle.textAlign;
 			label.Font = CharacterBioForm.labelFont;
 			label.BorderStyle = (desc.labelStyle.border) ? (BorderStyle.FixedSingle) : (BorderStyle.None);
-
-			// add to panel
 			Controls.Add(label);
-		}
-
-		~Field()
-		{
-			form.Controls.Remove(label);
 		}
 
 		public virtual void SetForeColor(Color _color)
