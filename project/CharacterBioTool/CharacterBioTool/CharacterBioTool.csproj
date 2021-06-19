@@ -52,8 +52,12 @@
     <Compile Include="CharacterBioForm.Designer.cs">
       <DependentUpon>CharacterBioForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Field.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringManipulation.cs" />
     <EmbeddedResource Include="CharacterBioForm.resx">
       <DependentUpon>CharacterBioForm.cs</DependentUpon>
     </EmbeddedResource>
