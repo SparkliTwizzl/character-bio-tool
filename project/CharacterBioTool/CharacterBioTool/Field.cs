@@ -1,63 +1,82 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using ExtensionMethods;
 
 
 
 namespace CharacterBioTool
 {
+	public enum FieldType
+	{
+		Basic,
+		Button,
+		TextBox,
+	}
+
+	public struct ControlStyle
+	{
+		public ContentAlignment textAlign;
+		public DockStyle dockStyle;
+		public bool autoSize;
+		public int width;
+		public int height;
+		public bool border;
+		public int padLeft;
+		public int padRight;
+		public int padTop;
+		public int padBottom;
+		public int marginLeft;
+		public int marginRight;
+		public int marginTop;
+		public int marginBottom;
+	}
+
+	public struct FieldDesc
+	{
+		public FieldType type;
+		public bool addToFormPanel;
+		public ControlStyle panelStyle;
+		public string labelText;
+		public ControlStyle labelStyle;
+		public string controlText;
+		public ControlStyle controlStyle;
+	}
+
+
 
 	public class Field : Panel
 	{
-		public enum TYPE
+		private CharacterBioForm form;
+
+		private FieldDesc desc;
+		public FieldDesc Desc
 		{
-			BASE,
-			BUTTON,
-			TEXT_BOX,
+			get => desc;
+			set => desc = value;
 		}
-		public struct ControlStyle
+
+		private Label label;
+		public Label Label
 		{
-			public ContentAlignment		textAlign { get; set; }
-			public DockStyle			dockStyle { get; set; }
-			public bool					autoSize { get; set; }
-			public int					width { get; set; }
-			public int					height { get; set; }
-			public bool					border { get; set; }
-			public int					padLeft { get; set; }
-			public int					padRight { get; set; }
-			public int					padTop { get; set; }
-			public int					padBottom { get; set; }
-			public int					marginLeft { get; set; }
-			public int					marginRight { get; set; }
-			public int					marginTop { get; set; }
-			public int					marginBottom { get; set; }
+			get => label;
+			set => label = value;
 		}
-		public struct Desc
+
+		private Control control;
+		public Control Control
 		{
-			public TYPE					type { get; set; }
-			public bool					addToFormPanel { get; set; }
-			public ControlStyle			panelStyle { get; set; }
-			public string				labelText { get; set; }
-			public ControlStyle			labelStyle { get; set; }
-			public string				controlText { get; set; }
-			public ControlStyle			controlStyle { get; set; }
+			get => control;
+			set => control = value;
 		}
 
 
-		private CharacterBioForm	form;
-		public Desc					desc { get; set; }
-		public Label				label { get; set; }
-		public Control				control { get; set; }
 
-
-		public Field(CharacterBioForm _form, Desc _desc)
+		public Field(CharacterBioForm _form, FieldDesc _desc)
 		{
 			form = _form;
-			desc = _desc;
+			Desc = _desc;
 			AddFieldToParentControl();
 			InitPanel();
 			InitLabel();
@@ -65,54 +84,85 @@ namespace CharacterBioTool
 
 		~Field()
 		{
-			form.Controls.Remove(label);
+			form.Controls.Remove(Label);
 		}
 
 		private void AddFieldToParentControl()
 		{
-			((desc.addToFormPanel) ? (form.fieldPanel.Controls) : (form.Controls)).Add(this);
+			var controls = (Desc.addToFormPanel)
+				? (form.fieldPanel.Controls)
+				: (form.Controls);
+			controls.Add(this);
 		}
+
 		private void InitPanel()
 		{
-			Location = (desc.addToFormPanel)
+			Location = (Desc.addToFormPanel)
 				? (form.nextPanelFieldPosition)
 				: (form.nextIndependentFieldPosition);
-			if (desc.panelStyle.width == 0 && desc.panelStyle.height == 0) AutoSize = true;
+
+			if (Desc.panelStyle.width == 0 && Desc.panelStyle.height == 0)
+			{
+				AutoSize = true;
+			}
+
 			Size = new Size(
-				((desc.panelStyle.width != 0)
-					? (desc.panelStyle.width)
-					: (Math.Max(desc.labelStyle.width, desc.controlStyle.width)))
-						+ desc.panelStyle.padLeft + desc.panelStyle.padRight,
-				((desc.panelStyle.height != 0)
-					? (desc.panelStyle.height)
-					: (desc.labelStyle.height + desc.controlStyle.height))
-						+ desc.panelStyle.padTop + desc.panelStyle.padBottom
+				(
+					(Desc.panelStyle.width != 0)
+						? (Desc.panelStyle.width)
+						: (Math.Max(Desc.labelStyle.width, Desc.controlStyle.width))
+				) + Desc.panelStyle.padLeft + Desc.panelStyle.padRight,
+				(
+					(Desc.panelStyle.height != 0)
+						? (Desc.panelStyle.height)
+						: (Desc.labelStyle.height + Desc.controlStyle.height)
+				) + Desc.panelStyle.padTop + Desc.panelStyle.padBottom
 				);
-			if (desc.panelStyle.border) BorderStyle = BorderStyle.FixedSingle;
-			Padding = new Padding(desc.panelStyle.padLeft, desc.panelStyle.padRight,
-				desc.panelStyle.padTop, desc.panelStyle.padBottom);
+
+			if (Desc.panelStyle.border)
+			{
+				BorderStyle = BorderStyle.FixedSingle;
+			}
+
+			Padding = new Padding(Desc.panelStyle.padLeft, Desc.panelStyle.padRight, Desc.panelStyle.padTop, Desc.panelStyle.padBottom);
 		}
 		private void InitLabel()
 		{
-			label = new Label();
-			label.Dock = (desc.labelStyle.dockStyle != DockStyle.None) ? (desc.labelStyle.dockStyle) : (DockStyle.Top);
-			label.Text = desc.labelText;
-			if (desc.labelStyle.width == 0 && desc.labelStyle.height == 0) label.AutoSize = true;
-			if (desc.labelStyle.width != 0) label.Width = desc.labelStyle.width;
-			if (desc.labelStyle.height != 0) label.Height = desc.labelStyle.height;
-			label.TextAlign = desc.labelStyle.textAlign;
-			label.Font = CharacterBioForm.labelFont;
-			label.BorderStyle = (desc.labelStyle.border) ? (BorderStyle.FixedSingle) : (BorderStyle.None);
-			Controls.Add(label);
+			Label = new Label();
+
+			Label.Dock = (Desc.labelStyle.dockStyle != DockStyle.None)
+				? (Desc.labelStyle.dockStyle)
+				: (DockStyle.Top);
+			Label.Text = Desc.labelText;
+			if (Desc.labelStyle.width == 0 && Desc.labelStyle.height == 0)
+			{
+				Label.AutoSize = true;
+			}
+			if (Desc.labelStyle.width != 0)
+			{
+				Label.Width = Desc.labelStyle.width;
+			}
+			if (Desc.labelStyle.height != 0)
+			{
+				Label.Height = Desc.labelStyle.height;
+			}
+			Label.TextAlign = Desc.labelStyle.textAlign;
+			Label.Font = CharacterBioForm.labelFont;
+			Label.BorderStyle =
+				(Desc.labelStyle.border)
+				? (BorderStyle.FixedSingle)
+				: (BorderStyle.None);
+
+			Controls.Add(Label);
 		}
 
 		public virtual void SetForeColor(Color _color)
 		{
-			label.ForeColor = _color;
+			Label.ForeColor = _color;
 		}
 		public virtual void SetMidColor(Color _color)
 		{
-			label.BackColor = _color;
+			Label.BackColor = _color;
 		}
 		public virtual void SetBackColor(Color _color)
 		{

@@ -57,7 +57,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringManipulation.cs" />
+    <Compile Include="Extensions.cs" />
     <EmbeddedResource Include="CharacterBioForm.resx">
       <DependentUpon>CharacterBioForm.cs</DependentUpon>
     </EmbeddedResource>
