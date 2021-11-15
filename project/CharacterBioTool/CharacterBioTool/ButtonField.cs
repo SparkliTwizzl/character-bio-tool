@@ -8,10 +8,6 @@ namespace CharacterBioTool
 {
 	public class ButtonField : Field
 	{
-		private CharacterBioForm form;
-
-
-
 		public ButtonField(CharacterBioForm _form, FieldDesc _desc)
 			: base(_form, _desc)
 		{

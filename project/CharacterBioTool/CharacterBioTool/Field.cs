@@ -47,23 +47,23 @@ namespace CharacterBioTool
 
 	public class Field : Panel
 	{
-		private CharacterBioForm form;
+		protected CharacterBioForm form;
 
-		private FieldDesc desc;
+		protected FieldDesc desc;
 		public FieldDesc Desc
 		{
 			get => desc;
 			set => desc = value;
 		}
 
-		private Label label;
+		protected Label label;
 		public Label Label
 		{
 			get => label;
 			set => label = value;
 		}
 
-		private Control control;
+		protected Control control;
 		public Control Control
 		{
 			get => control;
@@ -89,7 +89,7 @@ namespace CharacterBioTool
 		private void AddFieldToParentControl()
 		{
 			var controls = (Desc.addToFormPanel)
-				? (form.fieldPanel.Controls)
+				? (form.FieldPanel.Controls)
 				: (form.Controls);
 			controls.Add(this);
 		}
@@ -97,8 +97,8 @@ namespace CharacterBioTool
 		private void InitPanel()
 		{
 			Location = (Desc.addToFormPanel)
-				? (form.nextPanelFieldPosition)
-				: (form.nextIndependentFieldPosition);
+				? (form.NextPanelFieldPosition)
+				: (form.NextIndependentFieldPosition);
 
 			if (Desc.panelStyle.width == 0 && Desc.panelStyle.height == 0)
 			{
@@ -140,7 +140,7 @@ namespace CharacterBioTool
 				Label.Height = Desc.labelStyle.height;
 			}
 			Label.TextAlign = Desc.labelStyle.textAlign;
-			Label.Font = CharacterBioForm.labelFont;
+			Label.Font = form.LabelFont;
 			Label.BorderStyle =
 				(Desc.labelStyle.border)
 				? (BorderStyle.FixedSingle)

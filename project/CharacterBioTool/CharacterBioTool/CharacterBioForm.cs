@@ -12,86 +12,25 @@ namespace CharacterBioTool
 	public partial class CharacterBioForm : Form
 	{
 
-
-		#region form variables
-
-		// window
-		public const int				windowWidth = 1600;
-		public const int				windowHeight = 900;
-		public static readonly Size		windowSize = new Size(windowWidth, windowHeight);
-
-
-		// fonts
-		public static readonly Font		labelFont = new Font("Roboto", 10, FontStyle.Bold);
-		public static readonly Font		textBoxFont = new Font("Roboto", 9);
-
-
-		// color modes
 		public struct ColorPalette
 		{
-			public string	name { get; set; }
-			public Color	formBackColor { get; set; }
-			public Color	fieldForeColor { get; set; }
-			public Color	fieldMidColor { get; set; }
-			public Color	fieldBackColor { get; set; }
+			public string name;
+			public Color formBackColor;
+			public Color fieldForeColor;
+			public Color fieldMidColor;
+			public Color fieldBackColor;
 		}
-		public enum COLOR_MODE
-		{
-			DARK,
-			GREY,
-			LIGHT,
 
-			MIN = DARK,
-			MAX = LIGHT,
+		public enum ColorMode
+		{
+			Dark,
+			Grey,
+			Light,
+
+			Min = Dark,
+			Max = Light,
 		}
-		public COLOR_MODE				colorMode = COLOR_MODE.LIGHT;
-		public ColorPalette[]			palettes = new ColorPalette[]
-		{
-			new ColorPalette
-			{
-				name = "dark",
-				formBackColor	= CreateGreyColor(0x1f),
-				fieldForeColor	= Color.White,
-				fieldMidColor	= CreateGreyColor(0x67),
-				fieldBackColor	= CreateGreyColor(0x4f)
-			},
-			new ColorPalette
-			{
-				name = "grey",
-				formBackColor	= CreateGreyColor(0x6f),
-				fieldForeColor	= Color.White,
-				fieldMidColor	= CreateGreyColor(0x67),
-				fieldBackColor	= CreateGreyColor(0x7f)
-			},
-			new ColorPalette
-			{
-				name = "light",
-				formBackColor	= CreateGreyColor(0xcf),
-				fieldForeColor	= Color.Black,
-				fieldMidColor	= Color.White,
-				fieldBackColor	= CreateGreyColor(0xe7)
-				},
-		};
 
-
-		// location/spacing
-		public const int				originX = 20;
-		public const int				originY = 20;
-
-		public const int				fieldSpacingX = 50;
-		public readonly int				fieldSpacingY = (int)(labelFont.Size);
-
-		public static readonly int		defaultLabelWidth = 200;
-		public static readonly int		defaultLabelHeight = (int)(labelFont.Size * 2.25f);
-		public static readonly int		defaultControlWidth = defaultLabelWidth;
-		public static readonly int		defaultControlHeight = 50;
-
-		public Point					nextIndependentFieldPosition = new Point(originX, originY);
-		public Point					nextPanelFieldPosition = new Point(originX, originY);
-
-
-
-		// fields
 		public enum FieldName
 		{
 			ColorMode,
@@ -121,7 +60,147 @@ namespace CharacterBioTool
 			Count
 		}
 
-		public static ControlStyle		defaultPanelStyle = new ControlStyle
+
+
+		private const int windowWidth = 1600;
+		public int WindowWidth
+		{
+			get => windowWidth;
+		}
+
+		private const int windowHeight = 900;
+		public int WindowHeight
+		{
+			get => windowHeight;
+		}
+
+		private static readonly Size windowSize = new Size(windowWidth, windowHeight);
+		public Size WindowSize
+		{
+			get => windowSize;
+		}
+
+
+		private static readonly Font labelFont = new Font("Roboto", 10, FontStyle.Bold);
+		public Font LabelFont
+		{
+			get => labelFont;
+		}
+
+		private static readonly Font textBoxFont = new Font("Roboto", 9);
+		public Font TextBoxFont
+		{
+			get => textBoxFont;
+		}
+
+
+		private static readonly ColorPalette[] palettes = new ColorPalette[]
+		{
+			new ColorPalette
+			{
+				name = "dark",
+				formBackColor   = CreateGreyColor(0x1f),
+				fieldForeColor  = Color.White,
+				fieldMidColor   = CreateGreyColor(0x67),
+				fieldBackColor  = CreateGreyColor(0x4f)
+			},
+			new ColorPalette
+			{
+				name = "grey",
+				formBackColor   = CreateGreyColor(0x6f),
+				fieldForeColor  = Color.White,
+				fieldMidColor   = CreateGreyColor(0x67),
+				fieldBackColor  = CreateGreyColor(0x7f)
+			},
+			new ColorPalette
+			{
+				name = "light",
+				formBackColor   = CreateGreyColor(0xcf),
+				fieldForeColor  = Color.Black,
+				fieldMidColor   = Color.White,
+				fieldBackColor  = CreateGreyColor(0xe7)
+				},
+		};
+		public ColorPalette[] Palettes
+		{
+			get => palettes;
+		}
+
+		private static ColorMode activeColorMode = ColorMode.Light;
+		public ColorMode ActiveColorMode
+		{
+			get => activeColorMode;
+			set => activeColorMode = value;
+		}
+
+
+		private const int originX = 20;
+		public int OriginX
+		{
+			get => originX;
+		}
+
+		private const int originY = 20;
+		public int OriginY
+		{
+			get => originY;
+		}
+
+
+		private const int fieldSpacingX = 50;
+		public int FieldSpacingX
+		{
+			get => fieldSpacingX;
+		}
+
+		private readonly int fieldSpacingY = (int)(labelFont.Size);
+		public int FieldSpacingY
+		{
+			get => fieldSpacingY;
+		}
+
+
+		private const int defaultLabelWidth = 200;
+		public int DefaultLabelWidth
+		{
+			get => defaultLabelWidth;
+		}
+
+		private static readonly int defaultLabelHeight = (int)(labelFont.Size * 2.25f);
+		public int DefaultLabelHeight
+		{
+			get => defaultLabelHeight;
+		}
+
+		private const int defaultControlWidth = defaultLabelWidth;
+		public int DefaultControlWidth
+		{
+			get => defaultControlWidth;
+		}
+
+		private const int defaultControlHeight = 50;
+		public int DefaultControlHeight
+		{
+			get => defaultControlHeight;
+		}
+
+
+		private Point nextIndependentFieldPosition = new Point(originX, originY);
+		public Point NextIndependentFieldPosition
+		{
+			get => nextIndependentFieldPosition;
+			set => nextIndependentFieldPosition = value;
+		}
+
+		private Point nextPanelFieldPosition = new Point(originX, originY);
+		public Point NextPanelFieldPosition
+		{
+			get => nextPanelFieldPosition;
+			set => nextPanelFieldPosition = value;
+		}
+
+
+		private static readonly ControlStyle defaultPanelStyle = new ControlStyle
 		{
 			border = true,
 			padLeft = 5,
@@ -129,21 +208,36 @@ namespace CharacterBioTool
 			padTop = 5,
 			padBottom = 5,
 		};
-		public static ControlStyle		defaultTextFieldLabelStyle = new ControlStyle
+		public ControlStyle DefaultPanelStyle
+		{
+			get => defaultPanelStyle;
+		}
+
+		private static readonly ControlStyle defaultTextFieldLabelStyle = new ControlStyle
 		{
 			textAlign = ContentAlignment.MiddleLeft,
 			width = defaultLabelWidth,
 			height = defaultLabelHeight,
 			border = true,
 		};
-		public static ControlStyle		defaultTextFieldControlStyle = new ControlStyle
+		public ControlStyle DefaultTextFieldLabelStyle
+		{
+			get => defaultTextFieldLabelStyle;
+		}
+
+		private static readonly ControlStyle defaultTextFieldControlStyle = new ControlStyle
 		{
 			textAlign = (ContentAlignment)HorizontalAlignment.Left,
 			width = defaultControlWidth,
 			border = true,
 		};
+		public ControlStyle DefaultTextFieldControlStyle
+		{
+			get => defaultTextFieldControlStyle;
+		}
 
-		public FieldDesc[] fieldDescriptors = new FieldDesc[]
+
+		private static readonly FieldDesc[] fieldDescriptors = new FieldDesc[]
 		{
 			new FieldDesc
 			{
@@ -355,77 +449,59 @@ namespace CharacterBioTool
 				controlStyle = defaultTextFieldControlStyle,
 			},
 		};
-		public Panel					fieldPanel = new Panel();
-		public List<Field>				fieldList = new List<Field>();
+		public FieldDesc[] FieldDescriptors
+		{
+			get => fieldDescriptors;
+		}
 
-		#endregion form variables
+
+		private Panel fieldPanel = new Panel();
+		public Panel FieldPanel
+		{
+			get => fieldPanel;
+			set => fieldPanel = value;
+		}
+
+		private List<Field> fieldList = new List<Field>();
+		public List<Field> FieldList
+		{
+			get => fieldList;
+			set => fieldList = value;
+		}
 
 
 
 		#region helper functions
 
 		// generates a Color with the specified brightness level
-		public static Color CreateGreyColor(int _brightness) { return Color.FromArgb(_brightness, _brightness, _brightness); }
-
-		public static string ConvertStringCaseToFirstCaps(string _string)
+		public static Color CreateGreyColor(int _brightness)
 		{
-			char[] stringAsChars = _string.ToLower().ToCharArray();
-			// TODO: find & capitalize every letter that does not have a letter before it
-			return new string(stringAsChars);
+			return Color.FromArgb(_brightness, _brightness, _brightness);
 		}
 
-
-
-		// converts a string from snake_case to First Capitals Case
-		//public static string ConvertStringCaseFromSnakeToFirstCaps(string _str)
-		//{
-		//	//StringBuilder str = new StringBuilder();
-
-		//	//// convert string to lowercase first so each letter doesn't have to be converted separately
-		//	//_str = _str.ToLower();
-		//	//// handle first letter separately, since there is no previous letter to compare it to
-		//	//// replace underscore with space
-		//	//if (_str[0] == '_')
-		//	//	str.Append(' ');
-		//	//// capitalize char
-		//	//else
-		//	//	str.Append(_str[0].ToString().ToUpper());
-
-		//	//// handle rest of string
-		//	//for (int i = 1; i < _str.Length; ++i)
-		//	//{
-		//	//	// replace underscores with spaces
-		//	//	if (_str[i] == '_')
-		//	//	{
-		//	//		str.Append(' ');
-		//	//	}
-		//	//	else
-		//	//	{
-		//	//		// if previous char is underscore, capitalize this char
-		//	//		if (_str[i - 1] == '_')
-		//	//			str.Append(_str[i].ToString().ToUpper());
-		//	//		// otherwise, add char unmodified
-		//	//		else
-		//	//			str.Append(_str[i]);
-		//	//	}
-		//	//}
-
-		//	//return str.ToString();
-
-
-		//	// TODO: rewrite using string manip functions
-		//}
 
 		// functions to manage fields
 		void AddField(Field _field)
 		{
 			fieldList.Add(_field as Field);
 			if (_field.Desc.addToFormPanel)
-				nextPanelFieldPosition.Y = _field.Bottom + fieldSpacingY;
+			{
+				NextPanelFieldPosition = new Point(
+					NextPanelFieldPosition.X,
+					_field.Bottom + fieldSpacingY);
+			}
 			else
-				nextIndependentFieldPosition.Y = _field.Bottom + fieldSpacingY;
+			{
+				NextIndependentFieldPosition = new Point(
+					NextIndependentFieldPosition.X,
+					_field.Bottom + fieldSpacingY);
+			}
 		}
-		void RemoveField(Field _field) { fieldList.Remove(_field); }
+		void RemoveField(Field _field)
+		{
+			fieldList.Remove(_field);
+		}
+
 
 		// functions to manage colors
 		void SetFormColors(Color _formBackColor, Color _fieldForeColor, Color _fieldMidColor, Color _fieldBackColor)
@@ -442,17 +518,17 @@ namespace CharacterBioTool
 		{
 			SetFormColors(_palette.formBackColor, _palette.fieldForeColor, _palette.fieldMidColor, _palette.fieldBackColor);
 		}
-		void SetFieldForeColor(Color _color)
+		void SetForeColorForAllFields(Color _color)
 		{
 			for (int i = 0; i < fieldList.Count; ++i)
 				fieldList[i].SetForeColor(_color);
 		}
-		void SetFieldMidColor(Color _color)
+		void SetMidColorForAllFields(Color _color)
 		{
 			for (int i = 0; i < fieldList.Count; ++i)
 				fieldList[i].SetMidColor(_color);
 		}
-		void SetFieldBackColor(Color _color)
+		void SetBackColorForAllFields(Color _color)
 		{
 			for (int i = 0; i < fieldList.Count; ++i)
 				fieldList[i].SetBackColor(_color);
@@ -465,7 +541,7 @@ namespace CharacterBioTool
 		public CharacterBioForm()
 		{
 			InitializeComponent();
-			Size = windowSize;
+			Size = WindowSize;
 
 
 			// create lambdas
@@ -474,18 +550,18 @@ namespace CharacterBioTool
 			Func<FieldName, Field> GetField = _fieldName => ((int)_fieldName < fieldList.Count) ? (fieldList[(int)_fieldName]) : (null);
 
 			// create color mode lambdas
-			Func<COLOR_MODE, ColorPalette> GetPalette = _colorMode => palettes[(int)_colorMode];
-			Action<COLOR_MODE> SetColorMode = _colorMode =>
+			Func<ColorMode, ColorPalette> GetPalette = _colorMode => Palettes[(int)_colorMode];
+			Action<ColorMode> SetColorMode = _colorMode =>
 			{
-				ColorPalette palette = GetPalette(colorMode);
+				ColorPalette palette = GetPalette(ActiveColorMode);
 				SetFormColors(palette);
-				GetField(FieldName.ColorMode).Control.Text = Convert.ToString(colorMode);
+				GetField(FieldName.ColorMode).Control.Text = Convert.ToString(ActiveColorMode);
 			};
 
 
 			// init Control panel
 			fieldPanel.Location = new Point(0, 100);
-			fieldPanel.Size = windowSize;
+			fieldPanel.Size = WindowSize;
 			fieldPanel.AutoScroll = true;
 			fieldPanel.BorderStyle = BorderStyle.Fixed3D;
 			fieldPanel.Padding = new Padding(10);
@@ -510,7 +586,7 @@ namespace CharacterBioTool
 			}
 
 			// set initial color mode
-			SetColorMode(colorMode);
+			SetColorMode(ActiveColorMode);
 
 
 			// set field custom behaviors
@@ -519,8 +595,11 @@ namespace CharacterBioTool
 			GetField(FieldName.ColorMode).Control.Click += (obj, eventArgs) =>
 			{
 				ActiveControl = null; // defocus button after clicking it
-				colorMode = (colorMode == COLOR_MODE.MAX) ? (COLOR_MODE.MIN) : (colorMode + 1); // cycle to next color mode
-				SetColorMode(colorMode);
+				// cycle to next color mode
+				ActiveColorMode = (ActiveColorMode == ColorMode.Max)
+					? (ColorMode.Min)
+					: (ActiveColorMode + 1);
+				SetColorMode(ActiveColorMode);
 			};
 		}
 

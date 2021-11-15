@@ -8,10 +8,6 @@ namespace CharacterBioTool
 {
 	public class TextBoxField : Field
 	{
-		private CharacterBioForm form;
-
-
-
 		public TextBoxField(CharacterBioForm _form, FieldDesc _desc)
 			: base(_form, _desc)
 		{
@@ -60,7 +56,7 @@ namespace CharacterBioTool
 			textBox.BorderStyle = (Desc.controlStyle.border)
 				? (BorderStyle.Fixed3D) 
 				: (BorderStyle.None);
-			textBox.Font = CharacterBioForm.textBoxFont;
+			textBox.Font = form.TextBoxFont;
 			textBox.WordWrap = true;
 
 			// add to panel
