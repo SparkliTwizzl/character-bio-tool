@@ -29,7 +29,7 @@ namespace CharacterBioTool
 			TEXT_BOX,
 		}
 
-		public struct ControlStyle
+		public struct controlStyle
 		{
 			public ContentAlignment		textAlign { get; set; }
 			public DockStyle			dockStyle { get; set; }
@@ -50,11 +50,11 @@ namespace CharacterBioTool
 		{
 			public FIELD_TYPE			type { get; set; }
 			public bool					addToFormPanel { get; set; }
-			public ControlStyle			panelStyle { get; set; }
+			public controlStyle			panelStyle { get; set; }
 			public string				labelText { get; set; }
-			public ControlStyle			labelStyle { get; set; }
+			public controlStyle			labelStyle { get; set; }
 			public string				controlText { get; set; }
-			public ControlStyle			controlStyle { get; set; }
+			public controlStyle			controlStyle { get; set; }
 		}
 
 
@@ -123,7 +123,7 @@ namespace CharacterBioTool
 			//public Button button;
 
 
-			public ButtonField(CharacterBioForm _form, Desc _desc)
+			public ButtonField(CharacterBioForm _form, FieldDesc _desc)
 				: base(_form, _desc)
 			{
 				// init button
@@ -158,7 +158,7 @@ namespace CharacterBioTool
 			//public TextBox textBox;
 
 
-			public TextBoxField(CharacterBioForm _form, Desc _desc)
+			public TextBoxField(CharacterBioForm _form, FieldDesc _desc)
 				: base(_form, _desc)
 			{
 				// init text box
@@ -321,7 +321,7 @@ namespace CharacterBioTool
 			COUNT
 		}
 
-		public static Field.ControlStyle		defaultPanelStyle = new Field.ControlStyle
+		public static controlStyle		defaultPanelStyle = new controlStyle
 		{
 			border = true,
 			padLeft = 5,
@@ -329,228 +329,228 @@ namespace CharacterBioTool
 			padTop = 5,
 			padBottom = 5,
 		};
-		public static Field.ControlStyle		defaultTextFieldLabelStyle = new Field.ControlStyle
+		public static controlStyle		defaultTextFieldLabelStyle = new controlStyle
 		{
 			textAlign = ContentAlignment.MiddleLeft,
 			width = defaultLabelWidth,
 			height = defaultLabelHeight,
 			border = true,
 		};
-		public static Field.ControlStyle		defaultTextFieldControlStyle = new Field.ControlStyle
+		public static controlStyle		defaultTextFieldControlStyle = new controlStyle
 		{
 			textAlign = (ContentAlignment)HorizontalAlignment.Left,
 			width = defaultControlWidth,
 			border = true,
 		};
 
-		public Field.Desc[] fieldDescriptors = new Field.Desc[]
+		public FieldDesc[] fieldDescriptors = new FieldDesc[]
 		{
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.BUTTON,
+				type = FIELD_TYPE.BUTTON,
 				addToFormPanel = false,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.COLOR_MODE)),
-				labelStyle = new Field.ControlStyle
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.COLOR_MODE)),
+				labelStyle = new controlStyle
 				{
 					textAlign = ContentAlignment.MiddleCenter,
 					width = 100,
 					height = defaultLabelHeight,
 					border = true,
 				},
-				controlStyle = new Field.ControlStyle
+				controlStyle = new controlStyle
 				{
 					textAlign = ContentAlignment.MiddleCenter,
 					width = 100,
 					border = true,
 				},
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NAME)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.NAME)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.NICKNAME)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.NICKNAME)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.RACE)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.RACE)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.GENDER)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.GENDER)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.SEX)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.SEX)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
 				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.BIRTH_DATE)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.DEATH_DATE)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.DEATH_DATE)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.LITERAL_AGE)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.LITERAL_AGE)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.PHYSICAL_AGE)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.PHYSICAL_AGE)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.APPARENT_AGE)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.APPARENT_AGE)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.HEIGHT)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.HEIGHT)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.WEIGHT)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.WEIGHT)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.BUILD)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.BUILD)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.SKIN_COLOR)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.SKIN_COLOR)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.EYE_COLOR)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.EYE_COLOR)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.HAIR_LENGTH)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.HAIR_LENGTH)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.HAIR_STYLE)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.HAIR_STYLE)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.HAIR_COLOR)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.HAIR_COLOR)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.FACIAL_HAIR_LENGTH)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.FACIAL_HAIR_LENGTH)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.FACIAL_HAIR_STYLE)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.FACIAL_HAIR_STYLE)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
-			new Field.Desc
+			new FieldDesc
 			{
-				type = Field.TYPE.TEXT_BOX,
+				type = FIELD_TYPE.TEXT_BOX,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = CapCaseToFirstCaps(Convert.ToString(FIELD_NAME.FACIAL_HAIR_COLOR)),
+				labelText = ConvertCaseToFirstCaps(Convert.ToString(FIELD_NAME.FACIAL_HAIR_COLOR)),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -577,44 +577,44 @@ namespace CharacterBioTool
 
 
 		// converts a string from snake_case to First Capitals Case
-		public static string ConvertStringCaseFromSnakeToFirstCaps(string _str)
-		{
-			//StringBuilder str = new StringBuilder();
+		//public static string ConvertStringCaseFromSnakeToFirstCaps(string _str)
+		//{
+		//	//StringBuilder str = new StringBuilder();
 
-			//// convert string to lowercase first so each letter doesn't have to be converted separately
-			//_str = _str.ToLower();
-			//// handle first letter separately, since there is no previous letter to compare it to
-			//// replace underscore with space
-			//if (_str[0] == '_')
-			//	str.Append(' ');
-			//// capitalize char
-			//else
-			//	str.Append(_str[0].ToString().ToUpper());
+		//	//// convert string to lowercase first so each letter doesn't have to be converted separately
+		//	//_str = _str.ToLower();
+		//	//// handle first letter separately, since there is no previous letter to compare it to
+		//	//// replace underscore with space
+		//	//if (_str[0] == '_')
+		//	//	str.Append(' ');
+		//	//// capitalize char
+		//	//else
+		//	//	str.Append(_str[0].ToString().ToUpper());
 
-			//// handle rest of string
-			//for (int i = 1; i < _str.Length; ++i)
-			//{
-			//	// replace underscores with spaces
-			//	if (_str[i] == '_')
-			//	{
-			//		str.Append(' ');
-			//	}
-			//	else
-			//	{
-			//		// if previous char is underscore, capitalize this char
-			//		if (_str[i - 1] == '_')
-			//			str.Append(_str[i].ToString().ToUpper());
-			//		// otherwise, add char unmodified
-			//		else
-			//			str.Append(_str[i]);
-			//	}
-			//}
+		//	//// handle rest of string
+		//	//for (int i = 1; i < _str.Length; ++i)
+		//	//{
+		//	//	// replace underscores with spaces
+		//	//	if (_str[i] == '_')
+		//	//	{
+		//	//		str.Append(' ');
+		//	//	}
+		//	//	else
+		//	//	{
+		//	//		// if previous char is underscore, capitalize this char
+		//	//		if (_str[i - 1] == '_')
+		//	//			str.Append(_str[i].ToString().ToUpper());
+		//	//		// otherwise, add char unmodified
+		//	//		else
+		//	//			str.Append(_str[i]);
+		//	//	}
+		//	//}
 
-			//return str.ToString();
+		//	//return str.ToString();
 
 
-			// TODO: rewrite using string manip functions
-		}
+		//	// TODO: rewrite using string manip functions
+		//}
 
 		// functions to manage fields
 		void AddField(Field _field)
@@ -697,13 +697,13 @@ namespace CharacterBioTool
 				switch (fieldDescriptors[i].type)
 				{
 					default: break;
-					case Field.TYPE.BASE:
+					case FIELD_TYPE.BASIC:
 						AddField(new Field(this, fieldDescriptors[i]));
 						break;
-					case Field.TYPE.BUTTON:
+					case FIELD_TYPE.BUTTON:
 						AddField(new ButtonField(this, fieldDescriptors[i]));
 						break;
-					case Field.TYPE.TEXT_BOX:
+					case FIELD_TYPE.TEXT_BOX:
 						AddField(new TextBoxField(this, fieldDescriptors[i]));
 						break;
 				}
