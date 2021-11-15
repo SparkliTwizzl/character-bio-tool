@@ -12,106 +12,6 @@ namespace CharacterBioTool
 	public partial class CharacterBioForm : Form
 	{
 
-		#region field wrapper classes
-
-		// wrapper classes for winform controls to bundle labels with other functionality
-		// fields are limited to one functional Control each
-
-
-		public class ButtonField : Field
-		{
-			//public Button button;
-
-
-			public ButtonField(CharacterBioForm _form, FieldDesc _desc)
-				: base(_form, _desc)
-			{
-				// init button
-				Button button = new Button();
-				button.Dock = (Desc.controlStyle.dockStyle != DockStyle.None) ? (Desc.controlStyle.dockStyle) : (DockStyle.Bottom);
-				button.Text = Desc.controlText;
-				if (Desc.controlStyle.width == 0 && Desc.controlStyle.height == 0) button.AutoSize = true;
-				if (Desc.controlStyle.width != 0) button.Width = Desc.controlStyle.width;
-				if (Desc.controlStyle.height != 0) button.Height = Desc.controlStyle.height;
-				if (Desc.panelStyle.height == 0 && Desc.controlStyle.height == 0)
-					Height += button.Height;
-				button.TextAlign = Desc.controlStyle.textAlign;
-
-				// add to panel
-				Control = button;
-				Controls.Add(Control);
-			}
-
-			public override void SetForeColor(Color _color)
-			{
-				Control.ForeColor = _color;
-				base.SetForeColor(_color);
-			}
-			public override void SetMidColor(Color _color)
-			{
-				Control.BackColor = _color;
-				base.SetMidColor(_color);
-			}
-		} // end class
-		public class TextBoxField : Field
-		{
-			//public TextBox textBox;
-
-
-			public TextBoxField(CharacterBioForm _form, FieldDesc _desc)
-				: base(_form, _desc)
-			{
-				// init text box
-				TextBox textBox = new TextBox();
-				textBox.Dock = (Desc.controlStyle.dockStyle != DockStyle.None) ? (Desc.controlStyle.dockStyle) : (DockStyle.Bottom);
-				textBox.Text = Desc.controlText;
-				if (Desc.controlStyle.width != 0) textBox.Width = Desc.controlStyle.width;
-				if (Desc.controlStyle.height != 0) textBox.Height = Desc.controlStyle.height;
-				if (Desc.panelStyle.height == 0 && Desc.controlStyle.height == 0)
-					Height += textBox.Height;
-				switch (Desc.controlStyle.textAlign)
-				{
-					default:
-					case ContentAlignment.TopLeft:
-					case ContentAlignment.MiddleLeft:
-					case ContentAlignment.BottomLeft:
-						textBox.TextAlign = HorizontalAlignment.Left;
-						break;
-					case ContentAlignment.TopCenter:
-					case ContentAlignment.MiddleCenter:
-					case ContentAlignment.BottomCenter:
-						textBox.TextAlign = HorizontalAlignment.Center;
-						break;
-					case ContentAlignment.TopRight:
-					case ContentAlignment.MiddleRight:
-					case ContentAlignment.BottomRight:
-						textBox.TextAlign = HorizontalAlignment.Right;
-						break;
-				}
-				textBox.BorderStyle = (Desc.controlStyle.border) ? (BorderStyle.Fixed3D) : (BorderStyle.None);
-				textBox.Font = CharacterBioForm.textBoxFont;
-				textBox.WordWrap = true;
-
-				// add to panel
-				Control = textBox;
-				Controls.Add(Control);
-			}
-
-			public override void SetForeColor(Color _color)
-			{
-				Control.ForeColor = _color;
-				base.SetForeColor(_color);
-			}
-			public override void SetMidColor(Color _color)
-			{
-				Control.BackColor = _color;
-				base.SetMidColor(_color);
-			}
-		} // end class
-
-		#endregion field wrapper classes
-
-
 
 		#region form variables
 
@@ -192,33 +92,33 @@ namespace CharacterBioTool
 
 
 		// fields
-		public enum FIELD_NAME
+		public enum FieldName
 		{
-			COLOR_MODE,
-			NAME,
-			NICKNAME,
-			RACE,
-			GENDER,
-			SEX,
-			BIRTH_DATE,
-			DEATH_DATE,
-			LITERAL_AGE,
-			PHYSICAL_AGE,
-			APPARENT_AGE,
-			HEIGHT,
-			WEIGHT,
-			BUILD,
-			SKIN_COLOR,
-			EYE_COLOR,
-			HAIR_LENGTH,
-			HAIR_STYLE,
-			HAIR_COLOR,
-			FACIAL_HAIR_LENGTH,
-			FACIAL_HAIR_STYLE,
-			FACIAL_HAIR_COLOR,
-			ATTIRE,
+			ColorMode,
+			Name,
+			Nickname,
+			Race,
+			Gender,
+			Sex,
+			BirthDate,
+			DeathDate,
+			LiteralAge,
+			PhysicalAge,
+			ApparentAge,
+			Height,
+			Weight,
+			Build,
+			SkinColor,
+			EyeColor,
+			HairLength,
+			HairStyle,
+			HairColor,
+			FacialHairLength,
+			FacialHairStyle,
+			FacialHairColor,
+			Attire,
 
-			COUNT
+			Count
 		}
 
 		public static ControlStyle		defaultPanelStyle = new ControlStyle
@@ -250,7 +150,7 @@ namespace CharacterBioTool
 				type = FieldType.Button,
 				addToFormPanel = false,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.COLOR_MODE).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.ColorMode).ToFirstCapsCase(),
 				labelStyle = new ControlStyle
 				{
 					textAlign = ContentAlignment.MiddleCenter,
@@ -270,7 +170,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.NAME).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.Name).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -279,7 +179,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.NICKNAME).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.Nickname).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -288,7 +188,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.RACE).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.Race).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -297,7 +197,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.GENDER).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.Gender).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -306,7 +206,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.SEX).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.Sex).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -315,7 +215,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.BIRTH_DATE).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.BirthDate).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -324,7 +224,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.DEATH_DATE).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.DeathDate).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -333,7 +233,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.LITERAL_AGE).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.LiteralAge).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -342,7 +242,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.PHYSICAL_AGE).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.PhysicalAge).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -351,7 +251,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.APPARENT_AGE).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.ApparentAge).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -360,7 +260,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.HEIGHT).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.Height).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -369,7 +269,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.WEIGHT).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.Weight).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -378,7 +278,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.BUILD).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.Build).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -387,7 +287,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.SKIN_COLOR).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.SkinColor).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -396,7 +296,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.EYE_COLOR).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.EyeColor).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -405,7 +305,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.HAIR_LENGTH).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.HairLength).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -414,7 +314,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.HAIR_STYLE).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.HairStyle).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -423,7 +323,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.HAIR_COLOR).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.HairColor).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -432,7 +332,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.FACIAL_HAIR_LENGTH).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.FacialHairLength).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -441,7 +341,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.FACIAL_HAIR_STYLE).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.FacialHairStyle).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -450,7 +350,7 @@ namespace CharacterBioTool
 				type = FieldType.TextBox,
 				addToFormPanel = true,
 				panelStyle = defaultPanelStyle,
-				labelText = Convert.ToString(FIELD_NAME.FACIAL_HAIR_COLOR).ToFirstCapsCase(),
+				labelText = Convert.ToString(FieldName.FacialHairColor).ToFirstCapsCase(),
 				labelStyle = defaultTextFieldLabelStyle,
 				controlStyle = defaultTextFieldControlStyle,
 			},
@@ -571,7 +471,7 @@ namespace CharacterBioTool
 			// create lambdas
 
 			// create lambda to make accessing fields in list easier
-			Func<FIELD_NAME, Field> GetField = _fieldName => ((int)_fieldName < fieldList.Count) ? (fieldList[(int)_fieldName]) : (null);
+			Func<FieldName, Field> GetField = _fieldName => ((int)_fieldName < fieldList.Count) ? (fieldList[(int)_fieldName]) : (null);
 
 			// create color mode lambdas
 			Func<COLOR_MODE, ColorPalette> GetPalette = _colorMode => palettes[(int)_colorMode];
@@ -579,7 +479,7 @@ namespace CharacterBioTool
 			{
 				ColorPalette palette = GetPalette(colorMode);
 				SetFormColors(palette);
-				GetField(FIELD_NAME.COLOR_MODE).Control.Text = Convert.ToString(colorMode);
+				GetField(FieldName.ColorMode).Control.Text = Convert.ToString(colorMode);
 			};
 
 
@@ -616,7 +516,7 @@ namespace CharacterBioTool
 			// set field custom behaviors
 
 			// set color mode button behavior with event handler lambda
-			GetField(FIELD_NAME.COLOR_MODE).Control.Click += (obj, eventArgs) =>
+			GetField(FieldName.ColorMode).Control.Click += (obj, eventArgs) =>
 			{
 				ActiveControl = null; // defocus button after clicking it
 				colorMode = (colorMode == COLOR_MODE.MAX) ? (COLOR_MODE.MIN) : (colorMode + 1); // cycle to next color mode

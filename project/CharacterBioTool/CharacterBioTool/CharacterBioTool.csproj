@@ -46,11 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TextBoxField.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CharacterBioForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CharacterBioForm.Designer.cs">
       <DependentUpon>CharacterBioForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ButtonField.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Field.cs">
       <SubType>Component</SubType>

@@ -2,18 +2,17 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using ExtensionMethods;
-
 
 
 namespace CharacterBioTool
 {
+
 	public enum FieldType
 	{
 		Basic,
 		Button,
 		TextBox,
-	}
+	} // end enum
 
 	public struct ControlStyle
 	{
@@ -31,7 +30,7 @@ namespace CharacterBioTool
 		public int marginRight;
 		public int marginTop;
 		public int marginBottom;
-	}
+	} // end struct
 
 	public struct FieldDesc
 	{
@@ -42,7 +41,7 @@ namespace CharacterBioTool
 		public ControlStyle labelStyle;
 		public string controlText;
 		public ControlStyle controlStyle;
-	}
+	} // end struct
 
 
 
@@ -105,25 +104,19 @@ namespace CharacterBioTool
 			{
 				AutoSize = true;
 			}
-
-			Size = new Size(
-				(
-					(Desc.panelStyle.width != 0)
+			var width = (Desc.panelStyle.width != 0)
 						? (Desc.panelStyle.width)
-						: (Math.Max(Desc.labelStyle.width, Desc.controlStyle.width))
-				) + Desc.panelStyle.padLeft + Desc.panelStyle.padRight,
-				(
-					(Desc.panelStyle.height != 0)
+						: (Math.Max(Desc.labelStyle.width, Desc.controlStyle.width));
+			var height = (Desc.panelStyle.height != 0)
 						? (Desc.panelStyle.height)
-						: (Desc.labelStyle.height + Desc.controlStyle.height)
-				) + Desc.panelStyle.padTop + Desc.panelStyle.padBottom
-				);
-
+						: (Desc.labelStyle.height + Desc.controlStyle.height);
+			Size = new Size(
+				width + Desc.panelStyle.padLeft + Desc.panelStyle.padRight,
+				height + Desc.panelStyle.padTop + Desc.panelStyle.padBottom);
 			if (Desc.panelStyle.border)
 			{
 				BorderStyle = BorderStyle.FixedSingle;
 			}
-
 			Padding = new Padding(Desc.panelStyle.padLeft, Desc.panelStyle.padRight, Desc.panelStyle.padTop, Desc.panelStyle.padBottom);
 		}
 		private void InitLabel()
@@ -170,4 +163,5 @@ namespace CharacterBioTool
 		}
 
 	} // end class
+
 } // end namespace

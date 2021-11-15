@@ -4,8 +4,10 @@
 
 namespace ExtensionMethods
 {
+
 	public static class Extensions
 	{
+
 		public static bool CharIsLetter(this char _c)
 		{
 			return ((_c >= 'A' && _c <= 'Z') || (_c >= 'a' && _c <= 'z'));
@@ -55,4 +57,5 @@ namespace ExtensionMethods
 		}
 
 	} // end class
+
 } // end namespace
