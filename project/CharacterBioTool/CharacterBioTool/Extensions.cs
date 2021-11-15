@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 
 
@@ -8,46 +9,37 @@ namespace ExtensionMethods
 	public static class Extensions
 	{
 
-		public static bool CharIsLetter(this char _c)
+		#region char
+
+		public static bool IsEnglishLetter(this char _c)
 		{
 			return ((_c >= 'A' && _c <= 'Z') || (_c >= 'a' && _c <= 'z'));
 		}
 
-		public static string ReplaceCharsInString(this string _str, char[] _toReplace, char[] _replaceWith)
+		public static bool IsUpper(this char _c)
 		{
-			if (_str is null)
-			{
-				return null;
-			}
-
-			if (_str.Length == 0)
-			{
-				return _str;
-			}
-
-			if (_toReplace.Length < 1 || _replaceWith.Length < 1
-				|| _toReplace.Length != _replaceWith.Length)
-			{
-				throw new ArgumentException("Char arrays must be non-empty and equal in length");
-			}
-
-			char[] strAsChars = _str.ToCharArray();
-			for (int i = 0; i < strAsChars.Length; ++i)
-			{
-				// TODO: add logic to find & replace
-			}
-
-			return new string(strAsChars);
+			return (_c >= 'A' && _c <= 'Z');
 		}
+
+		public static bool IsLower(this char _c)
+		{
+			return (_c >= 'a' && _c <= 'z');
+		}
+
+		#endregion char
+
+
+
+		#region string
 
 		public static string ToFirstCapsCase(this string _str)
 		{
 			char[] strAsChars = _str.ToLower().ToCharArray();
-			strAsChars[0] = char.ToUpper(strAsChars[0]);
 
-			for (int i = 1; i < strAsChars.Length; ++i)
+			strAsChars[0] = char.ToUpper(strAsChars[0]);
+			for (var i = 1; i < strAsChars.Length; ++i)
 			{
-				if (!CharIsLetter(strAsChars[i - 1]))
+				if (!IsEnglishLetter(strAsChars[i - 1]))
 				{
 					strAsChars[i] = char.ToUpper(strAsChars[i]);
 				}
@@ -55,6 +47,25 @@ namespace ExtensionMethods
 
 			return new string(strAsChars);
 		}
+
+		public static string SplitAtCaps(this string _str)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.Append(_str[0]);
+			for (var i = 1; i < _str.Length; ++i)
+			{
+				if (_str[i].IsUpper())
+				{
+					sb.Append(' ');
+				}
+				sb.Append(_str[i]);
+			}
+
+			return sb.ToString();
+		}
+
+		#endregion string
 
 	} // end class
 
